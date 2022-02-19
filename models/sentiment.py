@@ -1,12 +1,14 @@
+from alpaca_news import AlpacaNews
+
 class Sentiment():
     def __init__(
         self,
         positive: float,
         neutral: float,
         negative: float,
-        article_url: str = None,
+        article: AlpacaNews,
     ):
-        self.article_url = article_url
+        self.article_url = article
         self.positive = positive
         self.neutral = neutral
         self.negative = negative
