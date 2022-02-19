@@ -99,10 +99,11 @@ class SentimentAnalyzer():
 
         # Create sentiment sentiment
         return Sentiment(
-            positive=sentiment_score['pos'], 
-            neutral=sentiment_score['neu'], 
-            negative=sentiment_score['neg'],
-            article=article    
+            article,    
+            sentiment_score['pos'], 
+            sentiment_score['neu'], 
+            sentiment_score['neg'],
+            sentiment_score['compound']
         )
 
     def __del__(self) -> None:
@@ -144,8 +145,8 @@ def test() -> None:
     )
 
     sa = SentimentAnalyzer()
-    sentim = sa.analyze(article)
-    print(f'Pos: {sentim.positive}, Neut: {sentim.neutral}, Neg: {sentim.negative}')
+    sentiment = sa.analyze(article)
+    print(f'Pos: {sentiment.positive}, Neut: {sentiment.neutral}, Neg: {sentiment.negative}, Compound: {sentiment.compound}')
 
 if __name__ == "__main__":
     test()
