@@ -43,7 +43,7 @@ class Cosmos():
 
     def write(
         self,
-        items: List[T],
+        items: List[Generic[T],]
     ) -> None:
         """Write items of the generic type T in the database
         this function will handle contain resolution based on

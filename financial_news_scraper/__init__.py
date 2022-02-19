@@ -17,7 +17,6 @@ def main(mytimer: func.TimerRequest) -> None:
 
     alpaca = Alpaca()
     ticker: AlpacaTicker = alpaca.getTickerInfo("TSLA")
-    Alpaca()
     cosmos = Cosmos()
     cosmos.write([ticker])
 
@@ -33,11 +32,5 @@ if __name__ == "__main__":
 
     alpaca = Alpaca()
     ticker: AlpacaTicker = alpaca.getTickerInfo("TSLA")
-    Alpaca()
     cosmos = Cosmos()
     cosmos.write([ticker])
-
-    if mytimer.past_due:
-        logging.info('The timer is past due!')
-
-    logging.info('Python timer trigger function ran at %s', utc_timestamp)
