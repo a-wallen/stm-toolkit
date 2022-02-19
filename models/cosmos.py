@@ -5,9 +5,11 @@ import base64
 import json
 import dotenv
 import jsonpickle
+from alpaca_news import AlpacaNews
+from alpaca_ticker import AlpacaTicker
 from prediction import Prediction
 from sentiment import Sentiment
-from typing import Dict, List, TypeVar, Generic
+from typing import Any, Dict, List, TypeVar, Generic
 from azure.cosmos import CosmosClient
 
 T = TypeVar('T')
@@ -17,9 +19,10 @@ class Cosmos():
         self._internalClient = self._cosmosCreateInstance()
         database_name = 'sentiments'
         self._database = self._internalClient.get_database_client(database_name)
-        self.report_container_name = "reports"
+        self.prediction_container_name = "predictions"
         self.article_container_name = "articles"
         self.sentiment_container_name = "sentiments"
+        self.ticker_container_name = "tickers"
         # container_name = 'Items'
         # self._container = self._database.get_container_client(container_name)
 
@@ -40,7 +43,7 @@ class Cosmos():
 
     def write(
         self,
-        items: List[T],
+        items: List[any]
     ) -> None:
         """Write items of the generic type T in the database
         this function will handle contain resolution based on
@@ -51,14 +54,17 @@ class Cosmos():
 
         Unit Tests:
         """
-        pass
+        container = self._getContainer(item_type=type(items[0]))
+        client = self._database.get_container_client(container)
+        for item in items:
+            client.upsert_item(item.__dict__)
 
     def read(
         self,
-        injection: str,
         item_type: Generic[T],
-        skip: int,
-        limit: int,
+        filter_injection: str=None,
+        skip: int=None,
+        limit: int=None,
     ) -> List[T]:
         """Read items of Generic type [T] from the database
 
@@ -75,9 +81,75 @@ class Cosmos():
         
         Unit Tests:
         """
-        print(item_type)
-        pass
+        container = self._getContainer(item_type)
+
+        whereClause = ""
+        if filter_injection:
+            whereClause = f"WHERE {filter_injection}"
+        
+        offset = ""
+        if offset:
+            offset = f"OFFSET {skip}"
+
+        range = ""
+        if limit:
+            range = f"LIMIT {limit}"
+
+        results: Any = self._internalClient.query_items(
+            f"""
+            SELECT * FROM {container}
+            {whereClause}
+            {offset}
+            {range}
+            """
+        )
+
+        converted: List[T] = []
+        for result in results:
+            converted.append(T(**result))
+        return converted
+
+    def _getContainer(self, item_type: any) -> str:
+        """Get container name from passed type
+
+        Args:
+            item_type (Generic[T]): type of the item that you want to do
+
+        Raises:
+            Exception: Exception if type name does not resolve to a container
+
+        Returns:
+            str: container name
+
+        Unit Test:
+            >>> c = Cosmos()
+            >>> actual = c.getContainer(AlpacaNews)
+            >>> expected = c.article_container_name
+            >>> actual == expected
+            True
+            >>> actual = c.getContainer(Prediction)
+            >>> expected = c.prediction_container_name
+            >>> actual == expected
+            True
+            >>> actual = c.getContainer(Sentiment)
+            >>> expected = c.sentiment_container_name
+            >>> actual == expected
+            True
+        """
+        if item_type == AlpacaNews:
+            container: str = self.article_container_name
+        elif item_type == Prediction:
+            container: str = self.prediction_container_name
+        elif item_type == Sentiment:
+            container: str = self.sentiment_container_name
+        elif item_type == AlpacaTicker:
+            container: str = self.ticker_container_name
+        else:   
+            raise Exception(f"Cannot read {item_type} from database")
+        return container
+
 
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
+    wrapper = CosmosClient()

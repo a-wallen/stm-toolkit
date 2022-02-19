@@ -44,3 +44,6 @@ class AlpacaTicker():
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
+    ticker = AlpacaTicker("a", "a", "a", "a", ["a"], "a", "a")
+    print(ticker.__dict__)
+    print(ticker.__iter__)
