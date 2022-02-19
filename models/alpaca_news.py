@@ -1,4 +1,4 @@
-import alpaca_image
+from alpaca_image import AlpacaImage
 from typing import List, Dict
 
 # https://alpaca.markets/docs/api-references/market-data-api/news-data/historical/
@@ -67,4 +67,3 @@ class AlpacaNews():
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
-    a = Alpaca()
