@@ -65,7 +65,7 @@ class SentimentAnalyzer():
         for key,value in sorted(sentilyzer.evaluate(test_set).items()):
             print('{0}: {1}'.format(key, value))
 
-        # 
+        # Sentences to analyze
         sentences = [   "VADER is smart, handsome, and funny.", # positive sentence example
            "VADER is smart, handsome, and funny!", # punctuation emphasis handled correctly (sentiment intensity adjusted)
            "VADER is very smart, handsome, and funny.",  # booster words handled correctly (sentiment intensity adjusted)
