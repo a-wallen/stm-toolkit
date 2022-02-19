@@ -6,6 +6,7 @@ import json
 import dotenv
 import jsonpickle
 from alpaca_news import AlpacaNews
+from alpaca_ticker import AlpacaTicker
 from prediction import Prediction
 from sentiment import Sentiment
 from typing import Any, Dict, List, TypeVar, Generic
@@ -21,6 +22,7 @@ class Cosmos():
         self.prediction_container_name = "predictions"
         self.article_container_name = "articles"
         self.sentiment_container_name = "sentiments"
+        self.ticker_container_name = "tickers"
         # container_name = 'Items'
         # self._container = self._database.get_container_client(container_name)
 
@@ -140,6 +142,8 @@ class Cosmos():
             container: str = self.prediction_container_name
         elif item_type == Sentiment:
             container: str = self.sentiment_container_name
+        elif item_type == AlpacaTicker:
+            container: str = self.ticker_container_name
         else:   
             raise Exception(f"Cannot read {item_type} from database")
         return container
