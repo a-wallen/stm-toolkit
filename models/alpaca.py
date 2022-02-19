@@ -52,7 +52,7 @@ class Alpaca():
         trade = self.api.get_latest_trade(symbol)
         print(trade)
         return AlpacaTicker(
-            t = trade.t,
+            t = str(trade.t),
             x = trade.x,
             p = trade.p,
             s = trade.s,
@@ -95,4 +95,3 @@ if __name__ == "__main__":
     doctest.testmod()
     alpaca = Alpaca()
     ticker = alpaca.getTickerInfo("AAPL")
-    print(ticker)

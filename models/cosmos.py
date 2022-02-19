@@ -43,7 +43,7 @@ class Cosmos():
 
     def write(
         self,
-        items: List[Generic[T],]
+        items: List[any]
     ) -> None:
         """Write items of the generic type T in the database
         this function will handle contain resolution based on
@@ -54,9 +54,10 @@ class Cosmos():
 
         Unit Tests:
         """
-        container = self._getContainer(item_type=T)
+        container = self._getContainer(item_type=type(items[0]))
         client = self._database.get_container_client(container)
         for item in items:
+            # item.t = str(item.t)
             client.upsert_item(item.__dict__)
 
     def read(
@@ -109,7 +110,7 @@ class Cosmos():
             converted.append(T(**result))
         return converted
 
-    def _getContainer(self, item_type: Generic[T]) -> str:
+    def _getContainer(self, item_type: any) -> str:
         """Get container name from passed type
 
         Args:
