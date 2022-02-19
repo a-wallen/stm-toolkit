@@ -8,7 +8,7 @@ import jsonpickle
 from alpaca_news import AlpacaNews
 from prediction import Prediction
 from sentiment import Sentiment
-from typing import Dict, List, TypeVar, Generic
+from typing import Any, Dict, List, TypeVar, Generic
 from azure.cosmos import CosmosClient
 
 T = TypeVar('T')
@@ -92,9 +92,8 @@ class Cosmos():
         range = ""
         if limit:
             range = f"LIMIT {limit}"
-            
 
-        self._internalClient.query_items(
+        results: Any = self._internalClient.query_items(
             f"""
             SELECT * FROM {container}
             {whereClause}
@@ -102,8 +101,11 @@ class Cosmos():
             {range}
             """
         )
-        
-        pass
+
+        converted: List[T] = []
+        for result in results:
+            converted.append(T(**result))
+        return converted
 
     def _getContainer(self, item_type: Generic[T]) -> str:
         """Get container name from passed type
