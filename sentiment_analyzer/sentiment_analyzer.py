@@ -47,6 +47,13 @@ class SentimentAnalyzer():
         training_docs = train_subj_docs + train_obj_docs
         testing_docs = test_subj_docs + test_obj_docs
 
+        # Handle negations with unigram word features
+        sentilyzer = Sentilyzer()
+        all_words_neg = sentilyzer.all_words([mark_negation(doc) for doc in training_docs]) 
+        unigram_feats = sentilyzer.unigram_word_feats(all_words_neg, min_freq=4)
+        print(len(unigram_feats))
+        sentilyzer.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
+
     def __del__(self) -> None:
         pass
 
