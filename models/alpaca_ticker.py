@@ -40,18 +40,10 @@ class AlpacaTicker():
         self.c = c
         self.i = i
         self.z = z
-    
-    def __iter__():
-        for key in self.__dict__:
-            print(key)
-            if key == "t":
-                yield key, str(self.__dict__[key])
-            else:
-                yield key, getattr(self, key)
 
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
-    ticker = AlpacaTicker("a", "a","a","a",["a"],"a","a")
+    ticker = AlpacaTicker("a", "a", "a", "a", ["a"], "a", "a")
     print(ticker.__dict__)
     print(ticker.__iter__)

@@ -50,7 +50,6 @@ class Alpaca():
             List[AlpacaTicker]: _description_
         """
         trade = self.api.get_latest_trade(symbol)
-        print(trade)
         return AlpacaTicker(
             t = str(trade.t),
             x = trade.x,

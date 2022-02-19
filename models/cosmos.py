@@ -57,7 +57,6 @@ class Cosmos():
         container = self._getContainer(item_type=type(items[0]))
         client = self._database.get_container_client(container)
         for item in items:
-            # item.t = str(item.t)
             client.upsert_item(item.__dict__)
 
     def read(
