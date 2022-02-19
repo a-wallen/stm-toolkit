@@ -5,8 +5,7 @@ import base64
 import json
 import dotenv
 import jsonpickle
-from article import Article
-from report import Report
+from prediction import Prediction
 from sentiment import Sentiment
 from typing import Dict, List, TypeVar, Generic
 from azure.cosmos import CosmosClient
@@ -39,7 +38,10 @@ class Cosmos():
             json_dict["primary_key"],
         )
 
-    def write(items: List[Generic[T]]) -> None:
+    def write(
+        self,
+        items: List[T],
+    ) -> None:
         """Write items of the generic type T in the database
         this function will handle contain resolution based on
         the type of T and return the result 
@@ -52,11 +54,12 @@ class Cosmos():
         pass
 
     def read(
+        self,
         injection: str,
-        type: Generic[T],
+        item_type: Generic[T],
         skip: int,
         limit: int,
-    ) -> List[Generic[T]]:
+    ) -> List[T]:
         """Read items of Generic type [T] from the database
 
         Args:
@@ -72,11 +75,9 @@ class Cosmos():
         
         Unit Tests:
         """
+        print(item_type)
         pass
-
-
 
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
-    c = Cosmos()
