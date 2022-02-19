@@ -12,6 +12,9 @@ class Sentiment():
         self.negative = negative
         pass
 
+    def __del__(self):
+        pass
+
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
