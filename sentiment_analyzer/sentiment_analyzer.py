@@ -25,13 +25,34 @@ class SentimentAnalyzer():
     def __init__(self) -> None:
         pass
 
-    def analyze(self) -> None:
+    def analyze(self, article : News) -> Sentiment:
 
-        # Sentiment data to analyze
+        # Article data to analyze
         # headline = article.headline
+        # author = article.author
+        # created_at = article.created_at
+        # updated_at = article.updated_at
         # summary = article.summary
         # content = article.content
+        # images = article.images
         # symbols = article.symbols
+        # source = article.source
+
+        article_data = [  
+            article.headline,
+            article.author,
+            article.created_at,
+            article.updated_at,
+            article.summary,
+            article.content,
+            article.images,
+            article.symbols,
+            article.source
+        ]
+
+        # String of all concatenated data
+        data_full = ''.join("%s " % ''.join(map(str, attribute)) for attribute in article_data)
+        print(data_full)
 
         # Retrieve subjective and objective documents, tokenize list
         n_instances = 100
@@ -64,94 +85,67 @@ class SentimentAnalyzer():
         classifier = sentilyzer.train(trainer, training_set)
         for key,value in sorted(sentilyzer.evaluate(test_set).items()):
             print('{0}: {1}'.format(key, value))
-
-        # Sentences to analyze
-        sentences = [   "VADER is smart, handsome, and funny.", # positive sentence example
-           "VADER is smart, handsome, and funny!", # punctuation emphasis handled correctly (sentiment intensity adjusted)
-           "VADER is very smart, handsome, and funny.",  # booster words handled correctly (sentiment intensity adjusted)
-           "VADER is VERY SMART, handsome, and FUNNY.",  # emphasis for ALLCAPS handled
-           "VADER is VERY SMART, handsome, and FUNNY!!!",# combination of signals - VADER appropriately adjusts intensity
-           "VADER is VERY SMART, really handsome, and INCREDIBLY FUNNY!!!",# booster words & punctuation make this close to ceiling for score
-           "The book was good.",         # positive sentence
-           "The book was kind of good.", # qualified positive sentence is handled correctly (intensity adjusted)
-           "The plot was good, but the characters are uncompelling and the dialog is not great.", # mixed negation sentence
-           "A really bad, horrible book.",       # negative sentence with booster words
-           "At least it isn't a horrible book.", # negated negative sentence with contraction
-           ":) and :D",     # emoticons handled
-           "",              # an empty string is correctly handled
-           "Today sux",     #  negative slang handled
-           "Today sux!",    #  negative slang with punctuation emphasis handled
-           "Today SUX!",    #  negative slang with capitalization emphasis
-           "Today kinda sux! But I'll get by, lol" # mixed sentiment example with slang and constrastive conjunction "but"
-        ]
-
-        paragraph = "It was one of the worst movies I've seen, despite good reviews. \
-            Unbelievably bad acting!! Poor direction. VERY poor production. \
-            The movie was bad. Very bad movie. VERY bad movie. VERY BAD movie. VERY BAD movie!"
-
-        lines_list = tokenize.sent_tokenize(paragraph)
-        sentences.extend(lines_list)
-
-        tricky_sentences = [
-            "Most automated sentiment analysis tools are shit.",
-            "VADER sentiment analysis is the shit.",
-            "Sentiment analysis has never been good.",
-            "Sentiment analysis with VADER has never been this good.",
-            "Warren Beatty has never been so entertaining.",
-            "I won't say that the movie is astounding and I wouldn't claim that \
-            the movie is too banal either.",
-            "I like to hate Michael Bay films, but I couldn't fault this one",
-            "I like to hate Michael Bay films, BUT I couldn't help but fault this one",
-            "It's one thing to watch an Uwe Boll film, but another thing entirely \
-            to pay for it",
-            "The movie was too good",
-            "This movie was actually neither that funny, nor super witty.",
-            "This movie doesn't care about cleverness, wit or any other kind of \
-            intelligent humor.",
-            "Those who find ugly meanings in beautiful things are corrupt without \
-            being charming.",
-            "There are slow and repetitive parts, BUT it has just enough spice to \
-            keep it interesting.",
-            "The script is not fantastic, but the acting is decent and the cinematography \
-            is EXCELLENT!",
-            "Roger Dodger is one of the most compelling variations on this theme.",
-            "Roger Dodger is one of the least compelling variations on this theme.",
-            "Roger Dodger is at least compelling as a variation on the theme.",
-            "they fall in love with the product",
-            "but then it breaks",
-            "usually around the time the 90 day warranty expires",
-            "the twin towers collapsed today",
-            "However, Mr. Carter solemnly argues, his client carried out the kidnapping \
-            under orders and in the ''least offensive way possible.''"
-        ]
-
-        # 
-        sentences.extend(tricky_sentences)
-        for sentence in sentences:
-            sid = SentimentIntensityAnalyzer()
-            print(sentence)
         
-            # Create polarity scores as a dictionary
-            # EX: {compound: -0.5859, neg: 0.23, neu: 0.697, pos: 0.074}
-            ss = sid.polarity_scores(sentence)
+        # Create polarity scores as a dictionary
+        # EX: {compound: -0.5859, neg: 0.23, neu: 0.697, pos: 0.074}
+        sia = SentimentIntensityAnalyzer()
+        sentiment_score = sia.polarity_scores(data_full)
 
-            # Print polatiry score
-            print(sorted(ss.values()))
-            for k in sorted(ss):
-                print('{0}: {1}'.format(k, ss[k]), end='')
-            print()
+        # Print polatiry score
+        print(sorted(sentiment_score.values()))
+        for k in sorted(sentiment_score):
+            print('{0}: {1}'.format(k, sentiment_score[k]), end='')
+        print()
 
-        # Return sentiment
-        #sentiment = Sentiment(positive=ss['pos'], neutral=ss['neu'], negative=ss['neg'])
-        #return sentiment
+        # Create sentiment sentiment
+        return Sentiment(
+            positive=sentiment_score['pos'], 
+            neutral=sentiment_score['neu'], 
+            negative=sentiment_score['neg'],
+            article=article    
+        )
 
     def __del__(self) -> None:
         pass
 
 def test() -> None:
+    article = News(
+        24803233,
+        "Benzinga's Top 5 Articles For 2021 — Or 'Who Let The Dog Out?'",
+        "Sue Strachan",
+        "2021-12-29T15:11:03Z",
+        "2021-12-30T20:37:41Z",
+        "2021 may have been the Year of the Ox in the Chinese calendar, but for Benzinga, it was the Year of the Dog, or should we say, Year of the Dogecoin (CRYPTO: DOGE).",
+        "<p>2021 may have been the Year of the Ox in the Chinese calendar, but for Benzinga, it was the Year of the Dog, or should we say, Year of the <strong>Dogecoin</strong> (CRYPTO: <a class=\"ticker\" href=\"https://www.benzinga.com/quote/doge/usd\">DOGE</a>).</p>\r\n\r\n<p>The memecoin created in 2013....",
+        [
+            {
+                "size": "large",
+                "url": "https://cdn.benzinga.com/files/imagecache/2048x1536xUP/images/story/2012/doge_12.jpg"
+            },
+            {
+                "size": "small",
+                "url": "https://cdn.benzinga.com/files/imagecache/1024x768xUP/images/story/2012/doge_12.jpg"
+            },
+            {
+                "size": "thumb",
+                "url": "https://cdn.benzinga.com/files/imagecache/250x187xUP/images/story/2012/doge_12.jpg"
+            }
+        ],
+        [
+            "AMZN",
+            "BTCUSD",
+            "COIN",
+            "DOGEUSD",
+            "SPCE",
+            "TSLA",
+            "TWTR"
+        ],
+        "benzinga"
+    )
+
     sa = SentimentAnalyzer()
-    sentim = sa.analyze()
-    # print(f'Pos: {sentim.positive}, Neut: {sentim.neutral}, Neg: {sentim.negative}')
+    sentim = sa.analyze(article)
+    print(f'Pos: {sentim.positive}, Neut: {sentim.neutral}, Neg: {sentim.negative}')
 
 if __name__ == "__main__":
     test()

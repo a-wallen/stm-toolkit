@@ -16,20 +16,21 @@ def extractRelevantData(article : News) -> None:
     symbols = article.symbols
     source = article.source
 
-    print(f"HEADLINE:\n {headline} \n")
-    print(f"AUTHOR\n {author} \n")
-    print(f"CREATED\n {created_at} \n")
-    print(f"UPDATED\n {updated_at} \n")
-    print(f"SUMMARY:\n {summary} \n")
-    print(f"CONTENT:\n {content} \n")
+    print(f"HEADLINE:\n\t{headline} \n")
+    print(f"AUTHOR\n\t{author} \n")
+    print(f"CREATED\n\t{created_at} \n")
+    print(f"UPDATED\n\t{updated_at} \n")
+    print(f"SUMMARY:\n\t{summary} \n")
+    print(f"CONTENT:\n\t{content} \n")
     print("IMAGES:\n")
     for image in images:
-        print('Size: {0}, URL: {1}'.format(image['size'], image['url']))
+        print('\tSize: {0}, URL: {1}'.format(image['size'], image['url']))
     print("\n")
     print("SYMBOLS:\n")
     for symbol in symbols:
-        print(symbol, end=' ')
+        print(f'\t{symbol} ')
     print("\n")
+    print(f"SOURCE:\n\t{source} \n")
 
 def main() -> None:
 
