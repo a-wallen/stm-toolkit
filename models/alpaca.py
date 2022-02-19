@@ -28,7 +28,6 @@ class Alpaca():
         return tradeapi.REST(
             key_id=json_dict["api_key_id"],
             secret_key=json_dict["secret_key"],
-            # base_url=URL(base_url),
         )
     
     # https://alpaca.markets/docs/api-references/market-data-api/stock-pricing-data/historical/
@@ -50,7 +49,17 @@ class Alpaca():
         Returns:
             List[AlpacaTicker]: _description_
         """
-        pass
+        trade = self.api.get_latest_trade(symbol)
+        print(trade)
+        return [AlpacaTicker(
+            t = trade.t,
+            x = trade.x,
+            p = trade.p,
+            s = trade.s,
+            c = trade.c,
+            i = trade.i,
+            z = trade.z,
+        )]
 
     # https://alpaca.markets/docs/api-references/market-data-api/news-data/historical/
     def getNews(
@@ -84,3 +93,5 @@ class Alpaca():
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
+    alpaca = Alpaca()
+    ticker = alpaca.getTickerInfo("AAPL")
