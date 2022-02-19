@@ -37,7 +37,7 @@ class Alpaca():
         start: datetime=None,
         end: datetime=None,
         limit: int=None,
-    ) -> List[AlpacaTicker]:
+    ) -> AlpacaTicker:
         """Get the ticker information for a given stock.
 
         Args:
@@ -51,7 +51,7 @@ class Alpaca():
         """
         trade = self.api.get_latest_trade(symbol)
         print(trade)
-        return [AlpacaTicker(
+        return AlpacaTicker(
             t = trade.t,
             x = trade.x,
             p = trade.p,
@@ -59,7 +59,7 @@ class Alpaca():
             c = trade.c,
             i = trade.i,
             z = trade.z,
-        )]
+        )
 
     # https://alpaca.markets/docs/api-references/market-data-api/news-data/historical/
     def getNews(
@@ -95,3 +95,4 @@ if __name__ == "__main__":
     doctest.testmod()
     alpaca = Alpaca()
     ticker = alpaca.getTickerInfo("AAPL")
+    print(ticker)

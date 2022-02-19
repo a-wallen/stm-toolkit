@@ -6,9 +6,10 @@ import json
 import dotenv
 import jsonpickle
 from alpaca_news import AlpacaNews
+from alpaca_ticker import AlpacaTicker
 from prediction import Prediction
 from sentiment import Sentiment
-from typing import Dict, List, TypeVar, Generic
+from typing import Any, Dict, List, TypeVar, Generic
 from azure.cosmos import CosmosClient
 
 T = TypeVar('T')
@@ -21,6 +22,7 @@ class Cosmos():
         self.prediction_container_name = "predictions"
         self.article_container_name = "articles"
         self.sentiment_container_name = "sentiments"
+        self.ticker_container_name = "tickers"
         # container_name = 'Items'
         # self._container = self._database.get_container_client(container_name)
 
@@ -41,7 +43,7 @@ class Cosmos():
 
     def write(
         self,
-        items: List[T],
+        items: List[Generic[T],]
     ) -> None:
         """Write items of the generic type T in the database
         this function will handle contain resolution based on
@@ -92,9 +94,8 @@ class Cosmos():
         range = ""
         if limit:
             range = f"LIMIT {limit}"
-            
 
-        self._internalClient.query_items(
+        results: Any = self._internalClient.query_items(
             f"""
             SELECT * FROM {container}
             {whereClause}
@@ -102,8 +103,11 @@ class Cosmos():
             {range}
             """
         )
-        
-        pass
+
+        converted: List[T] = []
+        for result in results:
+            converted.append(T(**result))
+        return converted
 
     def _getContainer(self, item_type: Generic[T]) -> str:
         """Get container name from passed type
@@ -138,6 +142,8 @@ class Cosmos():
             container: str = self.prediction_container_name
         elif item_type == Sentiment:
             container: str = self.sentiment_container_name
+        elif item_type == AlpacaTicker:
+            container: str = self.ticker_container_name
         else:   
             raise Exception(f"Cannot read {item_type} from database")
         return container
