@@ -1,10 +1,10 @@
 class Sentiment():
     def __init__(
         self,
-        article_url: str,
         positive: float,
         neutral: float,
         negative: float,
+        article_url: str = None,
     ):
         self.article_url = article_url
         self.positive = positive
