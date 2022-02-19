@@ -1,14 +1,23 @@
+from email.mime import image
 import os
+from symtable import Symbol
 import sys
 import json
 import base64
 from datetime import datetime
 import alpaca_trade_api as tradeapi
 from typing import Dict, List
+from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 from alpaca_ticker import AlpacaTicker
 from alpaca_news import AlpacaNews
 from alpaca_image import AlpacaImage
+
+from alpaca_trade_api.rest import TimeFrame, URL
+from alpaca_trade_api.rest_async import gather_with_concurrency, AsyncRest
+import alpaca_trade_api as tradeapi
+from alpaca_trade_api.common import URL, get_credentials, get_data_url
+
 
 class Alpaca():
     def __init__(self):
@@ -25,18 +34,20 @@ class Alpaca():
         encrypted_creds: str = os.environ["ALPACA_CREDS"]
         decoded: bytes = base64.b64decode(encrypted_creds)
         json_dict = json.loads(decoded)
+        # print(json_dict["api_key_id"])
+        # print(json_dict["secret_key"])
         return tradeapi.REST(
             key_id=json_dict["api_key_id"],
             secret_key=json_dict["secret_key"],
         )
-    
+
     # https://alpaca.markets/docs/api-references/market-data-api/stock-pricing-data/historical/
     def getTickerInfo(
         self,
         symbol: str,
-        start: datetime=None,
-        end: datetime=None,
-        limit: int=None,
+        start: datetime = None,
+        end: datetime = None,
+        limit: int = None,
     ) -> AlpacaTicker:
         """Get the ticker information for a given stock.
 
@@ -51,27 +62,48 @@ class Alpaca():
         """
         trade = self.api.get_latest_trade(symbol)
         return AlpacaTicker(
-            t = str(trade.t),
-            x = trade.x,
-            p = trade.p,
-            s = trade.s,
-            c = trade.c,
-            i = trade.i,
-            z = trade.z,
+            t=str(trade.t),
+            x=trade.x,
+            p=trade.p,
+            s=trade.s,
+            c=trade.c,
+            i=trade.i,
+            z=trade.z,
         )
 
     # https://alpaca.markets/docs/api-references/market-data-api/news-data/historical/
     def getNews(
         self,
-        symbols: str=None,
-        start: datetime=None,
-        end: datetime=None,
-        limit: int=None,
-        sort: str=None,
-        include_content: bool=None,
-        exclude_contentless: bool=None,
-        page_token: str=None
+        symbols: str = None,
+        start: datetime = None,
+        end: datetime = None,
+        limit: int = 10,
+        sort: str = None,
+        include_content: bool = True,
+        exclude_contentless: bool = False,
+        page_token: str = None
     ) -> List[AlpacaNews]:
+
+        # list = self.api.get_news(
+        #     symbol=symbols, start=start, end=end, limit=limit, sort=sort, include_content=include_content, exclude_contentless=exclude_contentless)
+        symbols = symbols or []  # TODO check if ano or many
+
+        list = self.api._data_get('', symbols, api_version='v1beta1', endpoint_base='news', start=start, end=end, limit=limit, sort=sort,
+                                  include_content=include_content,
+                                  exclude_contentless=exclude_contentless,
+                                  resp_grouped_by_symbol=False,)
+
+        finalList = []
+
+        for i in iter(list):
+
+            a = AlpacaNews(id=i["id"], headline=i["headline"], author=i["author"], created_at=i["created_at"], updated_at=i["updated_at"],
+                           summary=i["summary"], content=BeautifulSoup(i["content"], "lxml").text, images=[*map(lambda s: AlpacaImage(
+                               size=s["size"], url=s["url"]), i["images"])], symbols=i["symbols"], source=i["source"])
+            finalList.append(a)
+
+        return finalList
+
         """Returns latest news articles across stocks and crypto. By default returns latest 10 news articles.
 
         Args:
@@ -87,7 +119,7 @@ class Alpaca():
         Returns:
             List[AlpacaNews]: Returns latest news articles across stocks and crypto. By default returns latest 10 news articles.
         """
-        pass
+
 
 if __name__ == "__main__":
     import doctest

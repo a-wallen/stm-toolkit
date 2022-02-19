@@ -2,6 +2,8 @@ from alpaca_image import AlpacaImage
 from typing import List, Dict
 
 # https://alpaca.markets/docs/api-references/market-data-api/news-data/historical/
+
+
 class AlpacaNews():
     """Alpaca's definition of a news article
 
@@ -40,6 +42,7 @@ class AlpacaNews():
         "source": "benzinga"
     }
     """
+
     def __init__(
         self,
         id: int,
@@ -63,6 +66,10 @@ class AlpacaNews():
         self.images = images
         self.symbols = symbols
         self.source = source
+
+    def __str__(self) -> str:
+        return "[ " + str(self.id) + " | " + str(self.headline) + " | " + str(self.author) + " | " + str(self.summary) + " | " + str(self.content) + " | " + str(self.images) + " | " + str(self.symbols) + " | " + str(self.source) + " ]"
+
 
 if __name__ == "__main__":
     import doctest
