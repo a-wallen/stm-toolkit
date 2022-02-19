@@ -1,4 +1,4 @@
-import sys, os
+import sys, os, re
 # Append the path to the /models folder for access to shared models
 sys.path.append(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'models'))
 
@@ -8,16 +8,18 @@ sys.path.append(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'models
 import nltk # for natural language processing
 from nltk import tokenize
 from nltk.classify import NaiveBayesClassifier
-from nltk.corpus import subjectivity
+from nltk.corpus import subjectivity, stopwords
+from nltk.tokenize import word_tokenize
 from nltk.sentiment import SentimentAnalyzer as Sentilyzer
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from nltk.sentiment.util import *
+
 
 # Stock Ticker info from Alpaca: https://alpaca.markets/docs/api-references/market-data-api/stock-pricing-data/historical/
 from alpaca import Alpaca # internal wrapper for getting stock info getting articles
 from alpaca_news import AlpacaNews as News
 
-from cosmos import Cosmos # internal wrapper class for persisting data
+# from cosmos import Cosmos # internal wrapper class for persisting data
 from sentiment import Sentiment # internal class for storing sentiment data
 
 class SentimentAnalyzer():
@@ -25,66 +27,66 @@ class SentimentAnalyzer():
     def __init__(self) -> None:
         pass
 
+    # def _train(self) -> None:
+    #     # Retrieve subjective and objective documents, tokenize list
+    #     n_instances = 100
+    #     subj_docs = [(sent, 'subj') for sent in subjectivity.sents(categories='subj')[:n_instances]]
+    #     obj_docs = [(sent, 'obj') for sent in subjectivity.sents(categories='obj')[:n_instances]]
+    #     print(len(subj_docs), len(obj_docs))
+    #     print(obj_docs[0])
+
+    #     # Split subjective and objective instances to training and testing docs
+    #     train_subj_docs = subj_docs[:80]
+    #     test_subj_docs = subj_docs[80:100]
+    #     train_obj_docs = obj_docs[:80]
+    #     test_obj_docs = obj_docs[80:100]
+    #     training_docs = train_subj_docs + train_obj_docs
+    #     testing_docs = test_subj_docs + test_obj_docs
+
+    #     # Handle negations with unigram word features
+    #     sentilyzer = Sentilyzer()
+    #     all_words_neg = sentilyzer.all_words([mark_negation(doc) for doc in training_docs]) 
+    #     unigram_feats = sentilyzer.unigram_word_feats(all_words_neg, min_freq=4)
+    #     print(len(unigram_feats))
+    #     sentilyzer.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
+
+    #     # Apply features to obtain a feature-value representation of datasets
+    #     training_set = sentilyzer.apply_features(training_docs)
+    #     test_set = sentilyzer.apply_features(testing_docs)
+
+    #     # Train classifyer on training set
+    #     trainer = NaiveBayesClassifier.train
+    #     classifier = sentilyzer.train(trainer, training_set)
+    #     for key,value in sorted(sentilyzer.evaluate(test_set).items()):
+    #         print('{0}: {1}'.format(key, value))
+
+    def _filter_gen(self, text: str) -> str:
+        stop_words = set(stopwords.words('english'))
+        text = re.sub(r'[^\w\s]', '', text)
+        words = word_tokenize(text)
+        for word in words:
+            if word not in stop_words:
+                yield word
+
     def analyze(self, article : News) -> Sentiment:
 
         # Article data to analyze
-        # headline = article.headline
-        # author = article.author
-        # created_at = article.created_at
-        # updated_at = article.updated_at
-        # summary = article.summary
-        # content = article.content
-        # images = article.images
-        # symbols = article.symbols
-        # source = article.source
-
         article_data = [  
             article.headline,
             article.author,
-            article.created_at,
-            article.updated_at,
+            #article.created_at,
+            #article.updated_at,
             article.summary,
             article.content,
-            article.images,
+            #article.images,
             article.symbols,
-            article.source
+            #article.source
         ]
 
         # String of all concatenated data
-        data_full = ''.join("%s " % ''.join(map(str, attribute)) for attribute in article_data)
-        print(data_full)
-
-        # Retrieve subjective and objective documents, tokenize list
-        n_instances = 100
-        subj_docs = [(sent, 'subj') for sent in subjectivity.sents(categories='subj')[:n_instances]]
-        obj_docs = [(sent, 'obj') for sent in subjectivity.sents(categories='obj')[:n_instances]]
-        print(len(subj_docs), len(obj_docs))
-        print(obj_docs[0])
-
-        # Split subjective and objective instances to training and testing docs
-        train_subj_docs = subj_docs[:80]
-        test_subj_docs = subj_docs[80:100]
-        train_obj_docs = obj_docs[:80]
-        test_obj_docs = obj_docs[80:100]
-        training_docs = train_subj_docs + train_obj_docs
-        testing_docs = test_subj_docs + test_obj_docs
-
-        # Handle negations with unigram word features
-        sentilyzer = Sentilyzer()
-        all_words_neg = sentilyzer.all_words([mark_negation(doc) for doc in training_docs]) 
-        unigram_feats = sentilyzer.unigram_word_feats(all_words_neg, min_freq=4)
-        print(len(unigram_feats))
-        sentilyzer.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
-
-        # Apply features to obtain a feature-value representation of datasets
-        training_set = sentilyzer.apply_features(training_docs)
-        test_set = sentilyzer.apply_features(testing_docs)
-
-        # Train classifyer on training set
-        trainer = NaiveBayesClassifier.train
-        classifier = sentilyzer.train(trainer, training_set)
-        for key,value in sorted(sentilyzer.evaluate(test_set).items()):
-            print('{0}: {1}'.format(key, value))
+        data_full = ''.join('%s ' % ''.join(map(str, attribute)) for attribute in article_data).lower()
+        data_filtered = ''.join('%s ' % ' '.join(word for word in self._filter_gen(data_full)))
+        print(data_filtered)
         
         # Create polarity scores as a dictionary
         # EX: {compound: -0.5859, neg: 0.23, neu: 0.697, pos: 0.074}
@@ -92,10 +94,10 @@ class SentimentAnalyzer():
         sentiment_score = sia.polarity_scores(data_full)
 
         # Print polatiry score
-        print(sorted(sentiment_score.values()))
-        for k in sorted(sentiment_score):
-            print('{0}: {1}'.format(k, sentiment_score[k]), end='')
-        print()
+        # print(sorted(sentiment_score.values()))
+        # for k in sorted(sentiment_score):
+        #     print('{0}: {1}'.format(k, sentiment_score[k]), end='')
+        # print()
 
         # Create sentiment sentiment
         return Sentiment(
@@ -146,7 +148,11 @@ def test() -> None:
 
     sa = SentimentAnalyzer()
     sentiment = sa.analyze(article)
-    print(f'Pos: {sentiment.positive}, Neut: {sentiment.neutral}, Neg: {sentiment.negative}, Compound: {sentiment.compound}')
+    print(f'Pos: {sentiment.positive}, ' +
+        f'Neut: {sentiment.neutral}, ' +
+        f'Neg: {sentiment.negative}, ' +
+        f'Compound: {sentiment.compound}'
+    )
 
 if __name__ == "__main__":
     test()
