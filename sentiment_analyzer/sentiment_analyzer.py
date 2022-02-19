@@ -58,6 +58,12 @@ class SentimentAnalyzer():
         training_set = sentilyzer.apply_features(training_docs)
         test_set = sentilyzer.apply_features(testing_docs)
 
+        # Train classifyer on training set
+        trainer = NaiveBayesClassifier.train
+        classifier = sentilyzer.train(trainer, training_set)
+        for key,value in sorted(sentilyzer.evaluate(test_set).items()):
+            print('{0}: {1}'.format(key, value))
+
     def __del__(self) -> None:
         pass
 
