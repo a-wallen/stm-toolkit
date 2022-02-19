@@ -19,7 +19,7 @@ from nltk.sentiment.util import *
 from alpaca import Alpaca # internal wrapper for getting stock info getting articles
 from alpaca_news import AlpacaNews as News
 
-# from cosmos import Cosmos # internal wrapper class for persisting data
+from cosmos import Cosmos # internal wrapper class for persisting data
 from sentiment import Sentiment # internal class for storing sentiment data
 
 class SentimentAnalyzer():
@@ -60,10 +60,10 @@ class SentimentAnalyzer():
     #     for key,value in sorted(sentilyzer.evaluate(test_set).items()):
     #         print('{0}: {1}'.format(key, value))
 
-    def _filter_gen(self, text: str) -> str:
+    def _filter_gen(self, article_text: str) -> str:
         stop_words = set(stopwords.words('english'))
-        text = re.sub(r'[^\w\s]', '', text)
-        words = word_tokenize(text)
+        article_text = re.sub(r'[^\w\s]', '', article_text)
+        words = word_tokenize(article_text)
         for word in words:
             if word not in stop_words:
                 yield word
@@ -83,21 +83,14 @@ class SentimentAnalyzer():
             #article.source
         ]
 
-        # String of all concatenated data
-        data_full = ''.join('%s ' % ''.join(map(str, attribute)) for attribute in article_data).lower()
-        data_filtered = ''.join('%s ' % ' '.join(word for word in self._filter_gen(data_full)))
-        print(data_filtered)
+        # Filter string of all concatenated data
+        article_text = ''.join('%s ' % ''.join(map(str, attribute)) for attribute in article_data).lower()
+        article_text_filtered = ''.join('%s ' % ' '.join(word for word in self._filter_gen(article_text)))
         
         # Create polarity scores as a dictionary
         # EX: {compound: -0.5859, neg: 0.23, neu: 0.697, pos: 0.074}
         sia = SentimentIntensityAnalyzer()
-        sentiment_score = sia.polarity_scores(data_full)
-
-        # Print polatiry score
-        # print(sorted(sentiment_score.values()))
-        # for k in sorted(sentiment_score):
-        #     print('{0}: {1}'.format(k, sentiment_score[k]), end='')
-        # print()
+        sentiment_score = sia.polarity_scores(article_text_filtered)
 
         # Create sentiment sentiment
         return Sentiment(
@@ -148,7 +141,8 @@ def test() -> None:
 
     sa = SentimentAnalyzer()
     sentiment = sa.analyze(article)
-    print(f'Pos: {sentiment.positive}, ' +
+    print(
+        f'Pos: {sentiment.positive}, ' +
         f'Neut: {sentiment.neutral}, ' +
         f'Neg: {sentiment.negative}, ' +
         f'Compound: {sentiment.compound}'
