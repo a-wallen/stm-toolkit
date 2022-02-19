@@ -54,6 +54,10 @@ class SentimentAnalyzer():
         print(len(unigram_feats))
         sentilyzer.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
 
+        # Apply features to obtain a feature-value representation of datasets
+        training_set = sentilyzer.apply_features(training_docs)
+        test_set = sentilyzer.apply_features(testing_docs)
+
     def __del__(self) -> None:
         pass
 
