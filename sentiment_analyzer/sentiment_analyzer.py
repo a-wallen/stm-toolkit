@@ -32,7 +32,12 @@ class SentimentAnalyzer():
         # content = article.content
         # symbols = article.symbols
 
-        pass
+        # Retrieve subjective and objective documents, tokenize list
+        n_instances = 100
+        subj_docs = [(sent, 'subj') for sent in subjectivity.sents(categories='subj')[:n_instances]]
+        obj_docs = [(sent, 'obj') for sent in subjectivity.sents(categories='obj')[:n_instances]]
+        print(len(subj_docs), len(obj_docs))
+        print(obj_docs[0])
 
     def __del__(self) -> None:
         pass
