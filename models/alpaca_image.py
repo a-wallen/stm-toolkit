@@ -1,6 +1,8 @@
 from typing import List, Dict
 
 # https://alpaca.markets/docs/api-references/market-data-api/news-data/historical/
+
+
 class AlpacaImage():
     """Alpaca APIs definition of an image
 
@@ -10,12 +12,17 @@ class AlpacaImage():
     "url": "https://cdn.benzinga.com/files/imagecache/2048x1536xUP/images/story/2012/doge_12.jpg"
     }
     """
+
     def __init__(self,
-        size: str,
-        url: str,
-    ):
+                 size: str,
+                 url: str,
+                 ):
         self.size = size
         self.url = url
+
+    def __str__(self) -> str:
+        return "[ " + str(self.size) + " | " + str(self.url) + " ]"
+
 
 if __name__ == "__main__":
     import doctest
