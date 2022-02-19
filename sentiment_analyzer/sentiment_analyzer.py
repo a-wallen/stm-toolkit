@@ -39,6 +39,14 @@ class SentimentAnalyzer():
         print(len(subj_docs), len(obj_docs))
         print(obj_docs[0])
 
+        # Split subjective and objective instances to training and testing docs
+        train_subj_docs = subj_docs[:80]
+        test_subj_docs = subj_docs[80:100]
+        train_obj_docs = obj_docs[:80]
+        test_obj_docs = obj_docs[80:100]
+        training_docs = train_subj_docs + train_obj_docs
+        testing_docs = test_subj_docs + test_obj_docs
+
     def __del__(self) -> None:
         pass
 
