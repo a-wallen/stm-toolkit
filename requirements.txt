@@ -12,3 +12,4 @@ dotenv
 typing
 jsonpickle
 nltk
+bs4
