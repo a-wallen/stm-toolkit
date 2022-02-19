@@ -62,7 +62,7 @@ class SentimentAnalyzer():
 
     def _filter_gen(self, article_text: str) -> str:
         stop_words = set(stopwords.words('english'))
-        article_text = re.sub(r'[^\w\s]', '', article_text)
+        article_text = re.sub(r'[^\w\s]', ' ', article_text)
         words = word_tokenize(article_text)
         for word in words:
             if word not in stop_words:
@@ -89,8 +89,8 @@ class SentimentAnalyzer():
         
         # Create polarity scores as a dictionary
         # EX: {compound: -0.5859, neg: 0.23, neu: 0.697, pos: 0.074}
-        sia = SentimentIntensityAnalyzer()
-        sentiment_score = sia.polarity_scores(article_text_filtered)
+        sentimental_intense_anal = SentimentIntensityAnalyzer()
+        sentiment_score = sentimental_intense_anal.polarity_scores(article_text_filtered)
 
         # Create sentiment sentiment
         return Sentiment(

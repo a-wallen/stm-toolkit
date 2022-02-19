@@ -13,11 +13,13 @@ def main(documents: func.DocumentList) -> str:
     if documents:
         logging.info('Document id: %s', documents[0]['id'])
         
-        # Convert func.Doc to articles
-        article = ''
+        # Convert func.Docs to articles
+        for doc in documents:
+            
+            article = doc.to_json()
 
-        # Create sentiment reports
-        sa = SentimentAnalyzer()
-        sa.analyze(article)
+            # Create sentiment reports
+            sa = SentimentAnalyzer()
+            sa.analyze(article)
 
         # Write to db
