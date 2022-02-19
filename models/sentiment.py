@@ -3,15 +3,17 @@ from alpaca_news import AlpacaNews
 class Sentiment():
     def __init__(
         self,
+        article: AlpacaNews,
         positive: float,
         neutral: float,
         negative: float,
-        article: AlpacaNews,
+        compound: float,
     ):
         self.article_url = article
         self.positive = positive
         self.neutral = neutral
         self.negative = negative
+        self.compound = compound
         pass
 
     def __del__(self):
