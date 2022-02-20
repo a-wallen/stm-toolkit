@@ -11,3 +11,4 @@ typing
 jsonpickle
 nltk
 bs4
+plotly
