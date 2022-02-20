@@ -24,3 +24,16 @@ def main(documents: func.DocumentList) -> str:
         sentiment = sa.analyze(article)
         instance.write([sentiment])
 
+
+# Access database
+instance = Cosmos()
+
+# Read articles from database
+articles = instance.read(AlpacaNews)
+
+# Write article sentiment analysis reports to database
+sa = SentimentAnalyzer()
+for article in articles:
+    sentiment = sa.analyze(article)
+    instance.write([sentiment])
+
