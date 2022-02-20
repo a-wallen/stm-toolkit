@@ -11,6 +11,7 @@ from sentiment_analyzer import SentimentAnalyzer
 from alpaca_news import AlpacaNews
 from alpaca import Alpaca
 from delta import Delta
+from datetime import date
 
 def print_sentiment(sentiment: Sentiment) -> None:
     """Prints article sentiment analysis report"""
@@ -42,7 +43,7 @@ def main(documents: func.DocumentList) -> str:
         print_sentiment(sentiment)
 
     for article in articles:
-        delta: Delta = alpaca.getDelta(article.tickers, article.created_at)
+        delta: Delta = alpaca.getDelta(article.symbols, article.created_at)
         print(delta.__dict__)
         cosmos.write([delta])
 
@@ -60,6 +61,9 @@ if __name__ == "__main__":
     #     print_sentiment(sentiment)
 
     for article in articles:
+        # print('\n\n\n' + article.created_at +'\n\n\n')
+        # created = article.created_at.split('T')[0]
+        # print('\n\n\n' + created +'\n\n\n')
         delta = alpaca.getDelta(article.symbols, article.created_at)
         print(delta.__dict__)
         cosmos.write([delta])
