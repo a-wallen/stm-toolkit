@@ -61,7 +61,7 @@ class Cosmos():
 
     def read(
         self,
-        item_type: Generic[T],
+        item_type: type,
         filter_injection: str=None,
         skip: int=None,
         limit: int=None,
@@ -81,7 +81,10 @@ class Cosmos():
         
         Unit Tests:
         """
+        
+        # Get container details to read data from
         container = self._getContainer(item_type)
+        container_client = self._database.get_container_client(container)
 
         whereClause = ""
         if filter_injection:
@@ -95,18 +98,22 @@ class Cosmos():
         if limit:
             range = f"LIMIT {limit}"
 
-        results: Any = self._internalClient.query_items(
+        results: Any = container_client.query_items(
             f"""
             SELECT * FROM {container}
             {whereClause}
             {offset}
             {range}
-            """
+            """,
+            enable_cross_partition_query=True 
         )
 
-        converted: List[T] = []
+        converted = []
         for result in results:
-            converted.append(T(**result))
+            #converted.append(T(**result))
+            result = {x: result[x] for x in result if not x.startswith("_")}
+            c = item_type(**result)
+            converted.append(c)
         return converted
 
     def _getContainer(self, item_type: any) -> str:
