@@ -10,7 +10,15 @@ from sentiment import Sentiment # internal class for storing sentiment data
 from sentiment_analyzer import SentimentAnalyzer
 from alpaca_news import AlpacaNews
 
-def main(documents: func.DocumentList) -> str:
+def print_sentiment(sentiment: Sentiment) -> None:
+    print(
+        f'Pos: {sentiment.positive} ',
+        f'Neu: {sentiment.neutral} ',
+        f'Neg: {sentiment.negative} ',
+        f'Comp: {sentiment.compound} '
+    )
+
+def main() -> str: # documents: func.DocumentList
 
     # Access database
     instance = Cosmos()
@@ -23,17 +31,8 @@ def main(documents: func.DocumentList) -> str:
     for article in articles:
         sentiment = sa.analyze(article)
         instance.write([sentiment])
+        print_sentiment(sentiment)
 
 
-# Access database
-instance = Cosmos()
-
-# Read articles from database
-articles = instance.read(AlpacaNews)
-
-# Write article sentiment analysis reports to database
-sa = SentimentAnalyzer()
-for article in articles:
-    sentiment = sa.analyze(article)
-    instance.write([sentiment])
-
+if __name__ == '__main__':
+    main()

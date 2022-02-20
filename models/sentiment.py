@@ -20,7 +20,6 @@ class Sentiment():
         self.neutral = neutral
         self.negative = negative
         self.compound = compound
-        pass
 
     def __del__(self):
         pass
