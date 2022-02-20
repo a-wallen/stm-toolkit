@@ -11,19 +11,16 @@ from sentiment_analyzer import SentimentAnalyzer
 from alpaca_news import AlpacaNews
 
 def main(documents: func.DocumentList) -> None:
+
+    # Access database
     _database = Cosmos()
     _database._cosmosCreateInstance()
+
+    # Read articles from database
     articles = _database.read(AlpacaNews)
 
+    # Write article sentiment analysis reports to database
     sa = SentimentAnalyzer()
     for article in articles:
         sentiment = sa.analyze(article)
         _database.write([sentiment])
-
-        # print(
-        #     f'Pos: {sentiment.positive}, ' +
-        #     f'Neut: {sentiment.neutral}, ' +
-        #     f'Neg: {sentiment.negative}, ' +
-        #     f'Compound: {sentiment.compound}'
-        # )
-        
