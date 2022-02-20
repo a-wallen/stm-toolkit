@@ -33,7 +33,13 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             data = f.read()
         return func.HttpResponse(
             status_code=200,
-            headers={'content-type':'text/html'},
+            headers={
+                "content-type":"text/html",
+                "Access-Control-Allow-Origin": "*", 
+                "Access-Control-Allow-Credentials": True, 
+                "Access-Control-Allow-Headers": "Origin,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,locale",
+                "Access-Control-Allow-Methods": "POST, OPTIONS"
+            },
             charset="utf-16",
             body=data
         )
