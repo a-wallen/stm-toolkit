@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(const MyApp());
@@ -51,19 +53,10 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    Future response = Future.value(-1);
+
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -71,27 +64,57 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-          // The search area here
-          title: Container(
-        width: double.infinity,
-        height: 40,
-        decoration: BoxDecoration(
-            color: Colors.white, borderRadius: BorderRadius.circular(5)),
-        child: Center(
-            child: DropdownButtonFormField(
-          onChanged: (value) {
-            print(value);
-          },
-          items: [
-            DropdownMenuItem(
-              value: "TSLA",
-              child: Text("TSLA"),
-              onTap: null,
-            )
-          ],
+        appBar: AppBar(
+            // The search area here
+            title: Container(
+          width: double.infinity,
+          height: 40,
+          decoration: BoxDecoration(
+              color: Colors.white, borderRadius: BorderRadius.circular(5)),
+          child: Center(
+              child: DropdownButtonFormField(
+            onChanged: (value) {
+              print(value);
+              final uri = Uri.parse(
+                  "https://stm-functions.azurewebsites.net/api/service?symbol=TSLA");
+              response = http.get(uri);
+              setState(() {
+                _counter++;
+              });
+              print("Hello");
+            },
+            items: const [
+              DropdownMenuItem(
+                value: "TSLA",
+                child: Text("TSLA"),
+                onTap: null,
+              )
+            ],
+          )),
         )),
-      )),
-    );
+        body: _counter == 0
+            ? Center(
+                child: Container(
+                child: Text("Welcome"),
+              ))
+            : FutureBuilder(
+                future: response,
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.hasData) {
+                    if (snapshot.data == -1) {
+                      return Center(child: CircularProgressIndicator());
+                    } else {
+                      return Container(color: Colors.blue);
+                    }
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Container(
+                        child: Text("Error"),
+                      ),
+                    );
+                  }
+
+                  return Center(child: CircularProgressIndicator());
+                }));
   }
 }
