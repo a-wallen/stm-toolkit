@@ -65,5 +65,7 @@ if __name__ == "__main__":
         # created = article.created_at.split('T')[0]
         # print('\n\n\n' + created +'\n\n\n')
         delta = alpaca.getDelta(article.symbols, article.created_at)
+        if delta == None:
+            continue
         print(delta.__dict__)
         cosmos.write([delta])

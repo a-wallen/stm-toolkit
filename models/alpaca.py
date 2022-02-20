@@ -85,10 +85,13 @@ class Alpaca():
         now: datetime = datetime.now()
         date: datetime = parser.parse(day)
         if date.day == now.day and date.month == now.month and date.year == now.year:
-            date -= timedelta(hours=24)
-        notime = str(date).split()[0]
-        print('\n\n\n' + notime +'\n\n\n')
-        bars = self.api.get_bars(symbol, TimeFrame.Day, str(notime), str(notime), adjustment='raw')
+            date = now - timedelta(minutes=15)
+        end = date.strftime("%Y-%m-%dT%H:%M:%S+00:00")
+        start = date.strftime("%Y-%m-%dT00:00:00+00:00")
+        print(end)
+        bars = self.api.get_bars(symbol, TimeFrame.Hour, str(end), str(end), adjustment='raw')
+        if not bars:
+            return None
         opening: float = float(bars[0].o)
         closing: float = float(bars[-1].c)
         delta: float = closing / opening
@@ -97,7 +100,7 @@ class Alpaca():
             open=str(opening),
             close=str(closing),
             delta=str(delta),
-            date=notime,
+            date=end,
         )
 
     # https://alpaca.markets/docs/api-references/market-data-api/news-data/historical/
