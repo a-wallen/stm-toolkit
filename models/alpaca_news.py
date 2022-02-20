@@ -64,11 +64,11 @@ class AlpacaNews():
         self.summary = summary
         self.content = content
         # self.images = images
-        self.symbols = symbols
+        self.tickers = symbols
         self.source = source
 
     def __str__(self) -> str:
-        return "[ " + str(self.id) + " | " + str(self.headline) + " | " + str(self.author) + " | " + str(self.summary) + " | " + str(self.content) + " | " + str(self.symbols) + " | " + str(self.source) + " ]"
+        return "[ " + str(self.id) + " | " + str(self.headline) + " | " + str(self.author) + " | " + str(self.summary) + " | " + str(self.content) + " | " + str(self.tickers) + " | " + str(self.source) + " ]"
 
 
 if __name__ == "__main__":
