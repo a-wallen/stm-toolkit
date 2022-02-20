@@ -1,4 +1,7 @@
 # stm-toolkit
-Python Tools for American Stock Market Analysis
+## Python Tools for American Stock Market Analysis
 
-<iframe src="https://redhawks-my.sharepoint.com/personal/wallenstephe_seattleu_edu/_layouts/15/Doc.aspx?sourcedoc={89fa20a7-fe53-4bbb-91b2-4af02932f88c}&amp;action=embedview&amp;wdAr=1.7777777777777777" width="476px" height="288px" frameborder="0">This is an embedded <a target="_blank" href="https://office.com">Microsoft Office</a> presentation, powered by <a target="_blank" href="https://office.com/webapps">Office</a>.</iframe>
+![Screen Shot 2022-02-20 at 3 48 49 PM](https://user-images.githubusercontent.com/44445638/154869934-5b8d0c6e-8e2d-420d-acae-11c6914758a5.png)
+![Screen Shot 2022-02-20 at 3 49 00 PM](https://user-images.githubusercontent.com/44445638/154869936-44b267b4-4e64-4774-b9ff-d1f479758f07.png)
+![Screen Shot 2022-02-20 at 3 49 11 PM](https://user-images.githubusercontent.com/44445638/154869945-e22a4fbf-f2b4-4784-a0ca-ff222905af10.png)
+![Screen_Shot_2022-02-19_at_23 34 19-1](https://user-images.githubusercontent.com/44445638/154869979-f1622c04-e28d-42fe-aca6-6039d44bcba8.png)
