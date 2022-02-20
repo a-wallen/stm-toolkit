@@ -14,7 +14,6 @@ def main(documents: func.DocumentList) -> None:
 
     # Access database
     _database = Cosmos()
-    _database._cosmosCreateInstance()
 
     # Read articles from database
     articles = _database.read(AlpacaNews)
