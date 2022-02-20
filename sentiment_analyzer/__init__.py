@@ -20,12 +20,12 @@ def main() -> None: # documents: func.DocumentList
         sentiment = sa.analyze(article)
         _database.write([sentiment])
 
-        print(
-            f'Pos: {sentiment.positive}, ' +
-            f'Neut: {sentiment.neutral}, ' +
-            f'Neg: {sentiment.negative}, ' +
-            f'Compound: {sentiment.compound}'
-        )
+        # print(
+        #     f'Pos: {sentiment.positive}, ' +
+        #     f'Neut: {sentiment.neutral}, ' +
+        #     f'Neg: {sentiment.negative}, ' +
+        #     f'Compound: {sentiment.compound}'
+        # )
 
 if __name__ == '__main__':
     main()
