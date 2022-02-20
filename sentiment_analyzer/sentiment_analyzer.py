@@ -77,7 +77,7 @@ class SentimentAnalyzer():
         return Sentiment(
             tickers=article.tickers,
             source=article.source,
-            date=str(datetime.now()),
+            date=article.created_at,
             positive=sentiment_score['pos'], 
             neutral=sentiment_score['neu'], 
             negative=sentiment_score['neg'],
