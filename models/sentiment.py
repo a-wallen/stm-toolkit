@@ -13,7 +13,7 @@ class Sentiment():
         negative: float,
         compound: float,
     ):
-        self.symbols = tickers
+        self.tickers = tickers
         self.source = source
         self.date = date
         self.positive = positive

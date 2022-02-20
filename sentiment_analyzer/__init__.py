@@ -20,10 +20,10 @@ def print_sentiment(sentiment: Sentiment) -> None:
         f'Comp: {sentiment.compound} '
     )
 
-def main(documents: func.DocumentList) -> str: 
+def main() -> str: #documents: func.DocumentList
 
-    if documents:
-        logging.info('Document id: %s', documents[0]['id'])
+    # if documents:
+    #     logging.info('Document id: %s', documents[0]['id'])
 
     # Access database
     instance = Cosmos()
@@ -37,3 +37,7 @@ def main(documents: func.DocumentList) -> str:
         sentiment = sa.analyze(article)
         instance.write([sentiment])
         print_sentiment(sentiment)
+
+
+if __name__ == "__main__":
+    main()
