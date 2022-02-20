@@ -1,6 +1,8 @@
 from typing import List
 
 class Sentiment():
+    """Contains data for sentiment analysis report"""
+
     def __init__(
         self,
         symbols: List[str],

@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
-import sys
 import os
 import base64
 import json
 import dotenv
-import jsonpickle
 from alpaca_news import AlpacaNews
 from alpaca_ticker import AlpacaTicker
 from prediction import Prediction
 from sentiment import Sentiment
-from typing import Any, Dict, List, TypeVar, Generic
+from typing import Any, Dict, List, TypeVar
 from azure.cosmos import CosmosClient
 
 T = TypeVar('T')
 
 class Cosmos():
+    """Cosmos DB wrapper"""
+
     def __init__(self):
         self._internalClient = self._cosmosCreateInstance()
         database_name = 'sentiments'
@@ -41,10 +41,7 @@ class Cosmos():
             json_dict["primary_key"],
         )
 
-    def write(
-        self,
-        items: List[any]
-    ) -> None:
+    def write(self, items: List[any]) -> None:
         """Write items of the generic type T in the database
         this function will handle contain resolution based on
         the type of T and return the result 
