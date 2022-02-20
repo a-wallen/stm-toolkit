@@ -46,4 +46,4 @@ if __name__ == "__main__":
     doctest.testmod()
     ticker = AlpacaTicker("a", "a", "a", "a", ["a"], "a", "a")
     print(ticker.__dict__)
-    print(ticker.__iter__)
+    print(str(ticker))

@@ -1,20 +1,21 @@
 #!/usr/bin/env python3
-import sys
 import os
 import base64
 import json
 import dotenv
-import jsonpickle
 from alpaca_news import AlpacaNews
 from alpaca_ticker import AlpacaTicker
 from prediction import Prediction
 from sentiment import Sentiment
-from typing import Any, Dict, List, TypeVar, Generic
+from typing import Any, Dict, List, TypeVar
 from azure.cosmos import CosmosClient
+from delta import Delta
 
 T = TypeVar('T')
 
 class Cosmos():
+    """Cosmos DB wrapper"""
+
     def __init__(self):
         self._internalClient = self._cosmosCreateInstance()
         database_name = 'sentiments'
@@ -23,6 +24,7 @@ class Cosmos():
         self.article_container_name = "articles"
         self.sentiment_container_name = "sentiments"
         self.ticker_container_name = "tickers"
+        self.delta_name = "deltas"
         # container_name = 'Items'
         # self._container = self._database.get_container_client(container_name)
 
@@ -41,10 +43,7 @@ class Cosmos():
             json_dict["primary_key"],
         )
 
-    def write(
-        self,
-        items: List[any]
-    ) -> None:
+    def write(self, items: List[any]) -> None:
         """Write items of the generic type T in the database
         this function will handle contain resolution based on
         the type of T and return the result 
@@ -61,7 +60,7 @@ class Cosmos():
 
     def read(
         self,
-        item_type: Generic[T],
+        item_type: type,
         filter_injection: str=None,
         skip: int=None,
         limit: int=None,
@@ -81,7 +80,10 @@ class Cosmos():
         
         Unit Tests:
         """
+        
+        # Get container details to read data from
         container = self._getContainer(item_type)
+        container_client = self._database.get_container_client(container)
 
         whereClause = ""
         if filter_injection:
@@ -95,18 +97,22 @@ class Cosmos():
         if limit:
             range = f"LIMIT {limit}"
 
-        results: Any = self._internalClient.query_items(
+        results: Any = container_client.query_items(
             f"""
             SELECT * FROM {container}
             {whereClause}
             {offset}
             {range}
-            """
+            """,
+            enable_cross_partition_query=True 
         )
 
-        converted: List[T] = []
+        converted = []
         for result in results:
-            converted.append(T(**result))
+            result = {res: result[res] for res in result if not res.startswith("_")}
+            c = item_type(**result)
+            converted.append(c)
+
         return converted
 
     def _getContainer(self, item_type: any) -> str:
@@ -144,6 +150,8 @@ class Cosmos():
             container: str = self.sentiment_container_name
         elif item_type == AlpacaTicker:
             container: str = self.ticker_container_name
+        elif item_type == Delta:
+            container: str = self.delta_name
         else:   
             raise Exception(f"Cannot read {item_type} from database")
         return container

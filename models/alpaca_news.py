@@ -52,6 +52,7 @@ class AlpacaNews():
         updated_at: str,
         summary: str,
         content: str,
+        # images: List[AlpacaImage],
         symbols: List[str],
         source: str,
     ):
@@ -62,11 +63,12 @@ class AlpacaNews():
         self.updated_at = updated_at
         self.summary = summary
         self.content = content
-        self.symbols = symbols
+        # self.images = images
+        self.tickers = symbols
         self.source = source
 
     def __str__(self) -> str:
-        return "[ " + str(self.id) + " | " + str(self.headline) + " | " + str(self.author)  + " | " + str(self.symbols) + " | " + str(self.created_at)+" ]"
+        return "[ " + str(self.id) + " | " + str(self.headline) + " | " + str(self.author) + " | " + str(self.summary) + " | " + str(self.content) + " | " + str(self.tickers) + " | " + str(self.source) + " ]"
 
 
 if __name__ == "__main__":

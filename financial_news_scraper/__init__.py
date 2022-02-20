@@ -12,6 +12,7 @@ sys.path.append(os.path.join(os.path.dirname(
     os.path.dirname(__file__)), 'models'))
 from alpaca import Alpaca
 from alpaca_ticker import AlpacaTicker
+from alpaca_quote import AlpacaQuote
 from cosmos import Cosmos
 
 def main(mytimer: func.TimerRequest) -> None:
@@ -19,13 +20,17 @@ def main(mytimer: func.TimerRequest) -> None:
         tzinfo=datetime.timezone.utc).isoformat()
 
     alpaca = Alpaca()
-    ticker: AlpacaTicker = alpaca.getTickerInfo("TSLA")
     cosmos = Cosmos()
+
+    ticker: AlpacaTicker = alpaca.getTickerInfo("TSLA")
     cosmos.write([ticker])
 
     news = news.News()
     newsList = news.getNewsArticles()
     cosmos.write(newsList)
+
+    # quote: AlpacaQuote = alpaca.getQuoteInfo("TSLA")
+    # cosmos.write([quote])
 
     if mytimer.past_due:
         logging.info('The timer is past due!')
@@ -39,9 +44,9 @@ if __name__ == "__main__":
 
     alpaca = Alpaca()
     ticker: AlpacaTicker = alpaca.getTickerInfo("TSLA")
+    # quote: AlpacaQuote = alpaca.getQuoteInfo("TSLA")
     cosmos = Cosmos()
     cosmos.write([ticker])
     news = news.News()
     newsList = news.getNewsArticles()
-    print(len(newsList))
     cosmos.write(newsList)

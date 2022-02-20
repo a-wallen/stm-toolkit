@@ -1,20 +1,25 @@
-from alpaca_news import AlpacaNews
+from typing import List
 
 class Sentiment():
+    """Contains data for sentiment analysis report"""
+
     def __init__(
         self,
-        article: AlpacaNews,
+        tickers: List[str],
+        source: str,
+        date: str,
         positive: float,
         neutral: float,
         negative: float,
         compound: float,
     ):
-        self.article_url = article
+        self.tickers = tickers
+        self.source = source
+        self.date = date
         self.positive = positive
         self.neutral = neutral
         self.negative = negative
         self.compound = compound
-        pass
 
     def __del__(self):
         pass
