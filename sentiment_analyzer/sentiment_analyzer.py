@@ -23,6 +23,8 @@ from alpaca_news import AlpacaNews as News
 from cosmos import Cosmos # internal wrapper class for persisting data
 from sentiment import Sentiment # internal class for storing sentiment data
 
+from datetime import datetime
+
 class SentimentAnalyzer():
     """Sentiment Analyzer for Alpaca News articles"""
 
@@ -32,7 +34,10 @@ class SentimentAnalyzer():
     def _filter_gen(self, article_text: str) -> str:
         """Filters article text to contain relevant words
         
+        Eliminates unnecessary symbols and NLTK stopwords.
+
         :param article_text: Article text
+        :return: Yields relevant filtered words 
         """
 
         stop_words = set(stopwords.words('english'))
@@ -46,6 +51,7 @@ class SentimentAnalyzer():
         """Generates a sentiment analysis report  for an article
         
         :param article: Alpaca News article
+        :return: Sentiment analysis score
         """
 
         # Article data to analyze
@@ -72,7 +78,9 @@ class SentimentAnalyzer():
 
         # Create sentiment sentiment
         return Sentiment(
-            article,    
+            article.symbols,
+            article.source,
+            datetime.now().strftime('%c'),
             sentiment_score['pos'], 
             sentiment_score['neu'], 
             sentiment_score['neg'],
