@@ -53,13 +53,13 @@ if __name__ == "__main__":
 
     articles = cosmos.read(AlpacaNews)
 
-    sa = SentimentAnalyzer()
-    for article in articles:
-        sentiment = sa.analyze(article)
-        cosmos.write([sentiment])
-        print_sentiment(sentiment)
+    # sa = SentimentAnalyzer()
+    # for article in articles:
+    #     sentiment = sa.analyze(article)
+    #     cosmos.write([sentiment])
+    #     print_sentiment(sentiment)
 
     for article in articles:
-        delta = alpaca.getDelta(article.tickers, article.created_at)
+        delta = alpaca.getDelta(article.symbols, article.created_at)
         print(delta.__dict__)
         cosmos.write([delta])

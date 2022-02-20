@@ -28,7 +28,7 @@ class News():
     def __init__(self):
         self.alpaca = Alpaca()
 
-    def getNewsArticles(self) -> List[AlpacaNews]:
+    def getNewsArticles(self, symbols: List[str]) -> List[AlpacaNews]:
         local_time = datetime.utcnow()
         # local_time = local_time.strftime("%Y-%m-%eT%H:%M:%SZ")
         
@@ -36,7 +36,10 @@ class News():
         for i in range(5):
             td = timedelta(i*3)
             # print((local_time-td).strftime("%Y-%m-%eT%H:%M:%SZ"))
-            list += self.alpaca.getNews(end=(local_time-td).strftime("%Y-%m-%dT%H:%M:%SZ"))
+            list += self.alpaca.getNews(
+                symbols=symbols,
+                end=(local_time-td).strftime("%Y-%m-%dT%H:%M:%SZ")
+            )
         # td = timedelta(31)
         # print((local_time-td).strftime("%Y-%m-%dT%H:%M:%SZ"))
         # list+= self.alpaca.getNews(end=(local_time-td).strftime("%Y-%m-%dT%H:%M:%SZ"))
@@ -69,14 +72,16 @@ class News():
 
 if __name__ == "__main__":
     n = News()
-    list = n.getNewsArticles()
-    count = 0
-    for i in list:
-        if i.symbols.__contains__('TSLA'):
-            count+=1
-
-    print(count)
-
-    print([str(i) for i in list])
+    watchList: List[str] = [
+        "TSLA",
+        "MSFT",
+        "GOOG",
+        "AAPL",
+        "YHOO",
+        "SNE",
+        "RIVN",
+        "SMG",
+    ]
+    list = n.getNewsArticles(watchList)
 
     

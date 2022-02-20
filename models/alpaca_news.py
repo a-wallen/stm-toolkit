@@ -62,8 +62,7 @@ class AlpacaNews():
         self.updated_at = updated_at
         self.summary = summary
         self.content = content
-        # self.images = images
-        self.tickers = symbols
+        self.symbols = symbols
         self.source = source
 
     def __str__(self) -> str:
