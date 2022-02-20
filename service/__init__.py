@@ -43,18 +43,3 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
              status_code=200
         )
 
-# if __name__ == "__main__":
-#     symbol: str = "TSLA"
-#     directory: str = os.path.abspath(os.path.dirname(__file__))
-#     try:
-#         f = open(os.path.join(directory, f"{symbol}.html"))
-#     except (IOError, ValueError, EOFError) as e:
-#         g = Graph()
-#         figure = g.graph(symbol, directory)
-#     except:
-#         print("Unknown Error")
-#     finally:
-#         f = open(os.path.join(directory, f"{symbol}.html"))
-#         data = f.read()
-#         print(data)
-

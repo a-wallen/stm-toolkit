@@ -52,7 +52,6 @@ class AlpacaNews():
         updated_at: str,
         summary: str,
         content: str,
-        # images: List[AlpacaImage],
         symbols: List[str],
         source: str,
     ):
