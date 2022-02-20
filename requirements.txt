@@ -7,8 +7,6 @@ azure-cosmos
 newspaper3k
 alpaca-trade-api
 python-dotenv
-doctest
-dotenv
 typing
 jsonpickle
 nltk

@@ -10,17 +10,17 @@ from sentiment import Sentiment # internal class for storing sentiment data
 from sentiment_analyzer import SentimentAnalyzer
 from alpaca_news import AlpacaNews
 
-def main(documents: func.DocumentList) -> None:
+def main(documents: func.DocumentList) -> str:
 
     # Access database
-    _database = Cosmos()
-    _database._cosmosCreateInstance()
+    instance = Cosmos()
 
     # Read articles from database
-    articles = _database.read(AlpacaNews)
+    articles = instance.read(AlpacaNews)
 
     # Write article sentiment analysis reports to database
     sa = SentimentAnalyzer()
     for article in articles:
         sentiment = sa.analyze(article)
-        _database.write([sentiment])
+        instance.write([sentiment])
+

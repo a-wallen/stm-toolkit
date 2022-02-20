@@ -1,5 +1,3 @@
-[
-	{
-		"id": "sample"
-	}
-]
+{
+    "name": "Azure"
+}
