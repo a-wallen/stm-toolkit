@@ -121,17 +121,18 @@ class Alpaca():
     ) -> List[AlpacaNews]:
 
         
-        symbols = symbols or []  # TODO check if ano or many
+        symbols = ['TSLA']  
 
-        list = self.api._data_get('', symbols, api_version='v1beta1', endpoint_base='news', start=start, end=end, limit=limit, sort=sort,
-                                  include_content=include_content,
+        list = self.api._data_get('', symbols, api_version='v1beta1', endpoint_base='news', start=start, end=end, limit=50, sort="DESC",
+                                  include_content=True,
                                   exclude_contentless=exclude_contentless,
                                   resp_grouped_by_symbol=False,)
 
         finalList = []
 
         for i in iter(list):
-            a = AlpacaNews(id=str(i["id"]), headline=i["headline"], author=i["author"], created_at=i["created_at"], updated_at=i["updated_at"],
+            if "content" in i:
+                a = AlpacaNews(id=str(i["id"]), headline=i["headline"], author=i["author"], created_at=i["created_at"], updated_at=i["updated_at"],
                            summary=i["summary"], content=BeautifulSoup(i["content"], "lxml").text,
                                 symbols=i["symbols"], source=i["source"])
             finalList.append(a)

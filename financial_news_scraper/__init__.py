@@ -4,6 +4,8 @@ import datetime
 import logging
 import azure.functions as func
 
+import news
+
 
 # Append the path to the /models folder for access to shared models
 sys.path.append(os.path.join(os.path.dirname(
@@ -23,8 +25,9 @@ def main(mytimer: func.TimerRequest) -> None:
     ticker: AlpacaTicker = alpaca.getTickerInfo("TSLA")
     cosmos.write([ticker])
 
-    news = alpaca.getNews()
-    cosmos.write(news)
+    news = news.News()
+    newsList = news.getNewsArticles()
+    cosmos.write(newsList)
 
     # quote: AlpacaQuote = alpaca.getQuoteInfo("TSLA")
     # cosmos.write([quote])
@@ -44,6 +47,6 @@ if __name__ == "__main__":
     # quote: AlpacaQuote = alpaca.getQuoteInfo("TSLA")
     cosmos = Cosmos()
     cosmos.write([ticker])
-    # cosmos.write([quote])
-    news = alpaca.getNews()
-    cosmos.write(news)
+    news = news.News()
+    newsList = news.getNewsArticles()
+    cosmos.write(newsList)
