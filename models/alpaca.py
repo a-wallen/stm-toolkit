@@ -94,9 +94,9 @@ class Alpaca():
         if date.day == now.day and date.month == now.month and date.year == now.year:
             date -= timedelta(minutes=15)
 
-        quote = self.api.get_bars(symbol, TimeFrame.Day, str(date), str(date), adjustment='raw')
-        opening: float = float(quote[0].o)
-        closing: float = float(quote[-1].c)
+        bars = self.api.get_bars(symbol, TimeFrame.Day, str(date), str(date), adjustment='raw')
+        opening: float = float(bars[0].o)
+        closing: float = float(bars[-1].c)
         delta: float = closing / opening
         return Delta(
             symbol=symbol,
