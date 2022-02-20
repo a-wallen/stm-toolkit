@@ -18,8 +18,8 @@ def main(documents: func.DocumentList) -> str:
             
             article = doc.to_json()
 
-            # Create sentiment reports
+            # Create sentiment report
             sa = SentimentAnalyzer()
-            sa.analyze(article)
+            sentiment = sa.analyze(article)
 
-        # Write to db
+            # Write to db
