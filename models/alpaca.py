@@ -1,3 +1,4 @@
+from ast import Del
 from email.mime import image
 import os
 from symtable import Symbol
@@ -13,6 +14,7 @@ from alpaca_quote import AlpacaQuote
 from alpaca_ticker import AlpacaTicker
 from alpaca_news import AlpacaNews
 from alpaca_image import AlpacaImage
+from delta import Delta
 
 from alpaca_trade_api.rest import TimeFrame, URL, TimeFrameUnit
 from alpaca_trade_api.rest_async import gather_with_concurrency, AsyncRest
@@ -71,7 +73,7 @@ class Alpaca():
             z=trade.z,
         )
 
-    def getDelta(self, symbol: str, day: str) -> AlpacaQuote:
+    def getDelta(self, symbol: str, day: str) -> Delta:
         """Get the latest quote for a given stock
 
         Args:
@@ -85,8 +87,18 @@ class Alpaca():
         # quote = self.api.get_barset()
         # quote = self.api.get_latest_bar()
         # quote = self.api.get_latest_bars()
+        # print(quote[0].o, quote[-1].c)
         quote = self.api.get_bars(symbol, TimeFrame.Hour, day, day, adjustment='raw')
-        print(quote[0].o, quote[-1].c)
+        opening: float = float(quote[0].o)
+        closing: float = float(quote[-1].c)
+        delta: float = closing / opening
+        return Delta(
+            symbol=symbol,
+            open=str(opening),
+            close=str(closing),
+            delta=str(delta),
+            date=day,
+        )
         # print(quote)
 
     # https://alpaca.markets/docs/api-references/market-data-api/news-data/historical/
@@ -140,6 +152,4 @@ class Alpaca():
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
-    alpaca = Alpaca()
-    ticker = alpaca.getTickerInfo("TSLA")
-    quote = alpaca.getDelta("TSLA", "2021-06-08")
+    
