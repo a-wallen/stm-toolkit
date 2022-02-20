@@ -11,6 +11,8 @@ from sentiment_analyzer import SentimentAnalyzer
 from alpaca_news import AlpacaNews
 
 def print_sentiment(sentiment: Sentiment) -> None:
+    """Prints article sentiment analysis report"""
+
     print(
         f'Pos: {sentiment.positive} ',
         f'Neu: {sentiment.neutral} ',
@@ -18,7 +20,10 @@ def print_sentiment(sentiment: Sentiment) -> None:
         f'Comp: {sentiment.compound} '
     )
 
-def main() -> str: # documents: func.DocumentList
+def main(documents: func.DocumentList) -> str: 
+
+    if documents:
+        logging.info('Document id: %s', documents[0]['id'])
 
     # Access database
     instance = Cosmos()
@@ -32,7 +37,3 @@ def main() -> str: # documents: func.DocumentList
         sentiment = sa.analyze(article)
         instance.write([sentiment])
         print_sentiment(sentiment)
-
-
-if __name__ == '__main__':
-    main()
