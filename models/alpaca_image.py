@@ -1,3 +1,4 @@
+import json
 from typing import List, Dict
 
 # https://alpaca.markets/docs/api-references/market-data-api/news-data/historical/
@@ -22,6 +23,14 @@ class AlpacaImage():
 
     def __str__(self) -> str:
         return "[ " + str(self.size) + " | " + str(self.url) + " ]"
+
+
+    def __dict__(self):
+        return json.dumps(self, default=lambda o: o.__dict__)
+
+    def __repr__(self) -> str:
+        return self.__dict__
+
 
 
 if __name__ == "__main__":

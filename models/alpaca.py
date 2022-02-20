@@ -34,8 +34,6 @@ class Alpaca():
         encrypted_creds: str = os.environ["ALPACA_CREDS"]
         decoded: bytes = base64.b64decode(encrypted_creds)
         json_dict = json.loads(decoded)
-        # print(json_dict["api_key_id"])
-        # print(json_dict["secret_key"])
         return tradeapi.REST(
             key_id=json_dict["api_key_id"],
             secret_key=json_dict["secret_key"],
@@ -84,8 +82,7 @@ class Alpaca():
         page_token: str = None
     ) -> List[AlpacaNews]:
 
-        # list = self.api.get_news(
-        #     symbol=symbols, start=start, end=end, limit=limit, sort=sort, include_content=include_content, exclude_contentless=exclude_contentless)
+        
         symbols = symbols or []  # TODO check if ano or many
 
         list = self.api._data_get('', symbols, api_version='v1beta1', endpoint_base='news', start=start, end=end, limit=limit, sort=sort,
@@ -96,10 +93,9 @@ class Alpaca():
         finalList = []
 
         for i in iter(list):
-
-            a = AlpacaNews(id=i["id"], headline=i["headline"], author=i["author"], created_at=i["created_at"], updated_at=i["updated_at"],
-                           summary=i["summary"], content=BeautifulSoup(i["content"], "lxml").text, images=[*map(lambda s: AlpacaImage(
-                               size=s["size"], url=s["url"]), i["images"])], symbols=i["symbols"], source=i["source"])
+            a = AlpacaNews(id=str(i["id"]), headline=i["headline"], author=i["author"], created_at=i["created_at"], updated_at=i["updated_at"],
+                           summary=i["summary"], content=BeautifulSoup(i["content"], "lxml").text,
+                                symbols=i["symbols"], source=i["source"])
             finalList.append(a)
 
         return finalList

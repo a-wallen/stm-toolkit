@@ -45,7 +45,7 @@ class AlpacaNews():
 
     def __init__(
         self,
-        id: int,
+        id: str,
         headline: str,
         author: str,
         created_at: str,
@@ -68,7 +68,7 @@ class AlpacaNews():
         self.source = source
 
     def __str__(self) -> str:
-        return "[ " + str(self.id) + " | " + str(self.headline) + " | " + str(self.author) + " | " + str(self.summary) + " | " + str(self.content) + " | " + str(self.images) + " | " + str(self.symbols) + " | " + str(self.source) + " ]"
+        return "[ " + str(self.id) + " | " + str(self.headline) + " | " + str(self.author) + " | " + str(self.summary) + " | " + str(self.content) + " | " + str(self.symbols) + " | " + str(self.source) + " ]"
 
 
 if __name__ == "__main__":
