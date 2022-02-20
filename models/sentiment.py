@@ -1,10 +1,9 @@
-from alpaca_news import AlpacaNews
-from typing import List, Dict
+from typing import List
 
 class Sentiment():
     def __init__(
         self,
-        ticker: List[str],
+        symbols: List[str],
         source: str,
         date: str,
         positive: float,
@@ -12,7 +11,7 @@ class Sentiment():
         negative: float,
         compound: float,
     ):
-        self.ticker = ticker
+        self.symbols = symbols
         self.source = source
         self.date = date,
         self.positive = positive

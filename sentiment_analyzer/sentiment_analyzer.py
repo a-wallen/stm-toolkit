@@ -80,7 +80,7 @@ class SentimentAnalyzer():
         return Sentiment(
             article.symbols,
             article.source,
-            datetime.now().strftime('%c'),
+            str(datetime.now()),
             sentiment_score['pos'], 
             sentiment_score['neu'], 
             sentiment_score['neg'],

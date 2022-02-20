@@ -110,10 +110,10 @@ class Cosmos():
 
         converted = []
         for result in results:
-            #converted.append(T(**result))
-            result = {x: result[x] for x in result if not x.startswith("_")}
+            result = {res: result[res] for res in result if not res.startswith("_")}
             c = item_type(**result)
             converted.append(c)
+
         return converted
 
     def _getContainer(self, item_type: any) -> str:
