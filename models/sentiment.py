@@ -15,7 +15,7 @@ class Sentiment():
     ):
         self.symbols = tickers
         self.source = source
-        self.date = date,
+        self.date = date
         self.positive = positive
         self.neutral = neutral
         self.negative = negative
