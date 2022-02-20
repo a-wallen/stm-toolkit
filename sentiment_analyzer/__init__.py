@@ -27,19 +27,5 @@ def main() -> None: # documents: func.DocumentList
             f'Compound: {sentiment.compound}'
         )
 
-    # if documents:
-    #     logging.info('Document id: %s', documents[0]['id'])
-        
-    #     # Convert func.Docs to articles
-    #     for doc in documents:
-            
-    #         article = doc.to_json()
-
-    #         # Create sentiment report
-    #         sa = SentimentAnalyzer()
-    #         sentiment = sa.analyze(article)
-
-    #         # Write to db
-
 if __name__ == '__main__':
     main()

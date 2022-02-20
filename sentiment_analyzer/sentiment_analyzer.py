@@ -64,7 +64,7 @@ class SentimentAnalyzer():
             article.content,
             #article.images,
             article.symbols,
-            #article.source
+            article.source
         ]
 
         # Filter string of all concatenated data
@@ -78,95 +78,14 @@ class SentimentAnalyzer():
 
         # Create sentiment sentiment
         return Sentiment(
-            article.symbols,
-            article.source,
-            str(datetime.now()),
-            sentiment_score['pos'], 
-            sentiment_score['neu'], 
-            sentiment_score['neg'],
-            sentiment_score['compound']
+            symbols=article.symbols,
+            source=article.source,
+            date=str(datetime.now()),
+            positive=sentiment_score['pos'], 
+            neutral=sentiment_score['neu'], 
+            negative=sentiment_score['neg'],
+            compound=sentiment_score['compound']
         )
 
     def __del__(self) -> None:
         pass
-
-def main() -> None:
-
-    dummy = News(
-        24803233,
-        "Benzinga's Top 5 Articles For 2021 — Or 'Who Let The Dog Out?'",
-        "Sue Strachan",
-        "2021-12-29T15:11:03Z",
-        "2021-12-30T20:37:41Z",
-        "2021 may have been the Year of the Ox in the Chinese calendar, but for Benzinga, it was the Year of the Dog, or should we say, Year of the Dogecoin (CRYPTO: DOGE).",
-        "<p>2021 may have been the Year of the Ox in the Chinese calendar, but for Benzinga, it was the Year of the Dog, or should we say, Year of the <strong>Dogecoin</strong> (CRYPTO: <a class=\"ticker\" href=\"https://www.benzinga.com/quote/doge/usd\">DOGE</a>).</p>\r\n\r\n<p>The memecoin created in 2013....",
-        [
-            {
-                "size": "large",
-                "url": "https://cdn.benzinga.com/files/imagecache/2048x1536xUP/images/story/2012/doge_12.jpg"
-            },
-            {
-                "size": "small",
-                "url": "https://cdn.benzinga.com/files/imagecache/1024x768xUP/images/story/2012/doge_12.jpg"
-            },
-            {
-                "size": "thumb",
-                "url": "https://cdn.benzinga.com/files/imagecache/250x187xUP/images/story/2012/doge_12.jpg"
-            }
-        ],
-        [
-            "AMZN",
-            "BTCUSD",
-            "COIN",
-            "DOGEUSD",
-            "SPCE",
-            "TSLA",
-            "TWTR"
-        ],
-        "benzinga"
-    )
-
-    sa = SentimentAnalyzer()
-    sentiment = sa.analyze(dummy)
-    print(
-        f'Pos: {sentiment.positive}, ' +
-        f'Neut: {sentiment.neutral}, ' +
-        f'Neg: {sentiment.negative}, ' +
-        f'Compound: {sentiment.compound}'
-    )
-
-if __name__ == "__main__":
-    main()
-
-    # def _train(self) -> None:
-    #     # Retrieve subjective and objective documents, tokenize list
-    #     n_instances = 100
-    #     subj_docs = [(sent, 'subj') for sent in subjectivity.sents(categories='subj')[:n_instances]]
-    #     obj_docs = [(sent, 'obj') for sent in subjectivity.sents(categories='obj')[:n_instances]]
-    #     print(len(subj_docs), len(obj_docs))
-    #     print(obj_docs[0])
-    #
-    #     # Split subjective and objective instances to training and testing docs
-    #     train_subj_docs = subj_docs[:80]
-    #     test_subj_docs = subj_docs[80:100]
-    #     train_obj_docs = obj_docs[:80]
-    #     test_obj_docs = obj_docs[80:100]
-    #     training_docs = train_subj_docs + train_obj_docs
-    #     testing_docs = test_subj_docs + test_obj_docs
-    #
-    #     # Handle negations with unigram word features
-    #     sentilyzer = Sentilyzer()
-    #     all_words_neg = sentilyzer.all_words([mark_negation(doc) for doc in training_docs]) 
-    #     unigram_feats = sentilyzer.unigram_word_feats(all_words_neg, min_freq=4)
-    #     print(len(unigram_feats))
-    #     sentilyzer.add_feat_extractor(extract_unigram_feats, unigrams=unigram_feats)
-    #
-    #     # Apply features to obtain a feature-value representation of datasets
-    #     training_set = sentilyzer.apply_features(training_docs)
-    #     test_set = sentilyzer.apply_features(testing_docs)
-    #
-    #     # Train classifyer on training set
-    #     trainer = NaiveBayesClassifier.train
-    #     classifier = sentilyzer.train(trainer, training_set)
-    #     for key,value in sorted(sentilyzer.evaluate(test_set).items()):
-    #         print('{0}: {1}'.format(key, value))
