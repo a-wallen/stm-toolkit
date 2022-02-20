@@ -5,7 +5,7 @@ from symtable import Symbol
 import sys
 import json
 import base64
-from datetime import datetime
+from datetime import datetime, timedelta
 import alpaca_trade_api as tradeapi
 from typing import Dict, List
 from bs4 import BeautifulSoup
@@ -15,6 +15,7 @@ from alpaca_ticker import AlpacaTicker
 from alpaca_news import AlpacaNews
 from alpaca_image import AlpacaImage
 from delta import Delta
+from dateutil import parser
 
 from alpaca_trade_api.rest import TimeFrame, URL, TimeFrameUnit
 from alpaca_trade_api.rest_async import gather_with_concurrency, AsyncRest
@@ -61,7 +62,6 @@ class Alpaca():
         Returns:
             List[AlpacaTicker]: _description_
         """
-        # trade = self.api.get_latest_trade(symbol)
         trade = self.api.get_latest_trade(symbol)
         return AlpacaTicker(
             t=str(trade.t),
@@ -82,15 +82,14 @@ class Alpaca():
         Returns:
             List[AlpacaQuote]: _description_
         """
-        # quote = self.api.get_bars(symbol=symbol, timeframe=TimeFrame(1, TimeFrameUnit("Day")))
-        # quote = self.api.get_bars_iter(symbol=symbol, timeframe=TimeFrame(1, TimeFrameUnit("Day")))
-        # quote = self.api.get_barset()
-        # quote = self.api.get_latest_bar()
-        # quote = self.api.get_latest_bars()
-        # print(quote[0].o, quote[-1].c)
-        quote = self.api.get_bars(symbol, TimeFrame.Hour, day, day, adjustment='raw')
-        opening: float = float(quote[0].o)
-        closing: float = float(quote[-1].c)
+        now: datetime = datetime.now()
+        date: datetime = parser.parse(day)
+        if date.day == now.day and date.month == now.month and date.year == now.year:
+            date -= timedelta(minutes=15)
+
+        bars = self.api.get_bars(symbol, TimeFrame.Day, str(date), str(date), adjustment='raw')
+        opening: float = float(bars[0].o)
+        closing: float = float(bars[-1].c)
         delta: float = closing / opening
         return Delta(
             symbol=symbol,
@@ -99,7 +98,6 @@ class Alpaca():
             delta=str(delta),
             date=day,
         )
-        # print(quote)
 
     # https://alpaca.markets/docs/api-references/market-data-api/news-data/historical/
     def getNews(
@@ -113,7 +111,21 @@ class Alpaca():
         exclude_contentless: bool = False,
         page_token: str = None
     ) -> List[AlpacaNews]:
+        """Returns latest news articles across stocks and crypto. By default returns latest 10 news articles.
 
+        Args:
+            symbols (str, optional): List of symbols to obtain news. Defaults to None.
+            start (datetime, optional): (Default: 01-01-2015) Start date to obtain news. Defaults to None.
+            end (datetime, optional): (Default: now) End date to obtain news. Defaults to None.
+            limit (int, optional): (Default: 10, Max: 50) Limit of news items to be returned for given page. Defaults to None.
+            sort (str, optional): (Default: DESC) Sort articles by updated date. Options: DESC, ASC. Defaults to None.
+            include_content (bool, optional): (Default: false) Boolean whether to include content for news articles. Defaults to None.
+            exclude_contentless (bool, optional): (Default: false) Exclude news articles that do not contain content (just headline and summary). Defaults to None.
+            page_token (str, optional): Pagination token to continue to next page. Defaults to None.
+
+        Returns:
+            List[AlpacaNews]: Returns latest news articles across stocks and crypto. By default returns latest 10 news articles.
+        """
         
         symbols = ['TSLA']  
 
@@ -133,21 +145,6 @@ class Alpaca():
 
         return finalList
 
-        """Returns latest news articles across stocks and crypto. By default returns latest 10 news articles.
-
-        Args:
-            symbols (str, optional): List of symbols to obtain news. Defaults to None.
-            start (datetime, optional): (Default: 01-01-2015) Start date to obtain news. Defaults to None.
-            end (datetime, optional): (Default: now) End date to obtain news. Defaults to None.
-            limit (int, optional): (Default: 10, Max: 50) Limit of news items to be returned for given page. Defaults to None.
-            sort (str, optional): (Default: DESC) Sort articles by updated date. Options: DESC, ASC. Defaults to None.
-            include_content (bool, optional): (Default: false) Boolean whether to include content for news articles. Defaults to None.
-            exclude_contentless (bool, optional): (Default: false) Exclude news articles that do not contain content (just headline and summary). Defaults to None.
-            page_token (str, optional): Pagination token to continue to next page. Defaults to None.
-
-        Returns:
-            List[AlpacaNews]: Returns latest news articles across stocks and crypto. By default returns latest 10 news articles.
-        """
 
 
 if __name__ == "__main__":

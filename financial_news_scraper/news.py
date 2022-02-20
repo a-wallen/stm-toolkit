@@ -1,28 +1,20 @@
-from ctypes import sizeof
 from itertools import count
-import json
 import os
 import uuid
-from random import randint
 import sys
-from time import sleep
-from datetime import datetime, timedelta, timezone 
-
-from aiohttp import request
+from datetime import datetime, timedelta
 from bs4 import BeautifulSoup
+
 # Append the path to the /models folder for access to shared models
 sys.path.append(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'models'))
 
-
-from typing import Dict, List
+from typing import List
 # https://www.crummy.com/software/BeautifulSoup/bs4/doc/
-import bs4 # any scraping outside of bs4 and newspaper3k
+
 # CONVERT TO ALPACA_NEWS object if article is not from Alpaca
 
 # https://newspaper.readthedocs.io/en/latest/
 from newspaper import Article # summarize articles with url 
-import newspaper
-from newspaper import Source
 import requests
 
 # CONVERT TO ALPACA_NEWS object if article is not from Alpaca
@@ -30,9 +22,7 @@ import requests
 from alpaca import Alpaca # internal wrapper for Alpaca API
 # https://alpaca.markets/docs/api-references/market-data-api/news-data/historical/
 from alpaca_news import AlpacaNews # News as defined by the Alpaca API
-from alpaca_image import AlpacaImage # Images as defined by the Alpaca API
 # https://alpaca.markets/docs/api-references/market-data-api/stock-pricing-data/historical/
-from alpaca_ticker import AlpacaTicker # ticker information from Alpaca API
 
 class News():
     def __init__(self):
@@ -42,7 +32,6 @@ class News():
         local_time = datetime.utcnow()
         # local_time = local_time.strftime("%Y-%m-%eT%H:%M:%SZ")
         
-        # print(local_time)
         list = []
         for i in range(5):
             td = timedelta(i*3)
@@ -52,8 +41,6 @@ class News():
         # print((local_time-td).strftime("%Y-%m-%dT%H:%M:%SZ"))
         # list+= self.alpaca.getNews(end=(local_time-td).strftime("%Y-%m-%dT%H:%M:%SZ"))
         
-
-        # list+=self.getNewsUsingNewspaper()
         return list
 
     def getNewsUsingNewspaper(self) -> List[AlpacaNews]:
@@ -61,7 +48,6 @@ class News():
 
         response = requests.get(url, allow_redirects=True, timeout=30)
         soup = BeautifulSoup(response.content, 'html.parser')
-        # print(soup.prettify())
 
         soupTitle = soup.findAll("div", {"class":"Card-standardBreakerCard Card-threeUpStackRectangleSquareMedia Card-rectangleToLeftSquareMedia Card-card"}, recursive=True)
         
@@ -70,35 +56,20 @@ class News():
         for item in soupTitle:
             m = item.find("a")
             if m :
-                # print(m['href'])
                 list.append(Article(m['href']))
-
-
-        # print(list)
 
         finalList = []
 
         for article in list:
             article.download()
             article.parse()
-            # print(article.title)
             finalList.append(AlpacaNews(id=uuid.uuid4(), headline=article.title, author=article.authors, created_at=article.publish_date, updated_at=article.publish_date, summary=article.summary, content=article.text, symbols=article.keywords, source=article.source_url))
             
-        
-        # print(finalList[1].headline)
-        # print(finalList[1].symbols)
-
-
         return finalList
-
-  
-        
-
 
 if __name__ == "__main__":
     n = News()
     list = n.getNewsArticles()
-    # print(len(list))
     count = 0
     for i in list:
         if i.symbols.__contains__('TSLA'):
@@ -106,8 +77,6 @@ if __name__ == "__main__":
 
     print(count)
 
-    
-        
     print([str(i) for i in list])
 
     
