@@ -7,6 +7,10 @@ sys.path.append(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'models
 # sentiment analysis with nltk: https://www.nltk.org/howto/sentiment.html
 # sentiment word networks: https://www.nltk.org/howto/sentiwordnet.html
 # parent link: https://www.nltk.org/howto.html
+import nltk
+nltk.download('stopwords')
+nltk.download('punkt')
+nltk.download('vader_lexicon')
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.sentiment import SentimentAnalyzer as Sentilyzer
