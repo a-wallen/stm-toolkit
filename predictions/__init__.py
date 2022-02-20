@@ -6,6 +6,7 @@ import logging
 import azure.functions as func
 from cosmos import Cosmos
 from sentiment import Sentiment
+from delta import Delta
 
 def main(documents: func.DocumentList) -> str:
 
