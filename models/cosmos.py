@@ -9,6 +9,7 @@ from prediction import Prediction
 from sentiment import Sentiment
 from typing import Any, Dict, List, TypeVar
 from azure.cosmos import CosmosClient
+from delta import Delta
 
 T = TypeVar('T')
 
@@ -23,6 +24,7 @@ class Cosmos():
         self.article_container_name = "articles"
         self.sentiment_container_name = "sentiments"
         self.ticker_container_name = "tickers"
+        self.delta_name = "deltas"
         # container_name = 'Items'
         # self._container = self._database.get_container_client(container_name)
 
@@ -148,6 +150,8 @@ class Cosmos():
             container: str = self.sentiment_container_name
         elif item_type == AlpacaTicker:
             container: str = self.ticker_container_name
+        elif item_type == Delta:
+            container: str = self.delta_name
         else:   
             raise Exception(f"Cannot read {item_type} from database")
         return container
