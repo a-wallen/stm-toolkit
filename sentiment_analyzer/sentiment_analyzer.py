@@ -59,7 +59,7 @@ class SentimentAnalyzer():
             article.summary,
             article.content,
             #article.images,
-            article.tickers,
+            article.symbols,
             article.source
         ]
 
@@ -74,7 +74,7 @@ class SentimentAnalyzer():
 
         # Create sentiment sentiment
         return Sentiment(
-            tickers=article.tickers,
+            symbols=article.symbols,
             source=article.source,
             date=article.created_at,
             positive=sentiment_score['pos'], 

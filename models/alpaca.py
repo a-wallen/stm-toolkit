@@ -10,7 +10,7 @@ import alpaca_trade_api as tradeapi
 from typing import Dict, List
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
-from alpaca_quote import AlpacaQuote
+# from alpaca_quote import AlpacaQuote
 from alpaca_ticker import AlpacaTicker
 from alpaca_news import AlpacaNews
 from alpaca_image import AlpacaImage
@@ -102,7 +102,7 @@ class Alpaca():
     # https://alpaca.markets/docs/api-references/market-data-api/news-data/historical/
     def getNews(
         self,
-        symbols: str = None,
+        symbols: List[str] = None,
         start: datetime = None,
         end: datetime = None,
         limit: int = 10,
@@ -127,8 +127,6 @@ class Alpaca():
             List[AlpacaNews]: Returns latest news articles across stocks and crypto. By default returns latest 10 news articles.
         """
         
-        symbols = ['TSLA']  
-
         list = self.api._data_get('', symbols, api_version='v1beta1', endpoint_base='news', start=start, end=end, limit=50, sort="DESC",
                                   include_content=True,
                                   exclude_contentless=exclude_contentless,
@@ -141,7 +139,7 @@ class Alpaca():
                 a = AlpacaNews(id=str(i["id"]), headline=i["headline"], author=i["author"], created_at=i["created_at"], updated_at=i["updated_at"],
                            summary=i["summary"], content=BeautifulSoup(i["content"], "lxml").text,
                                 symbols=i["symbols"], source=i["source"])
-            finalList.append(a)
+                finalList.append(a)
 
         return finalList
 
