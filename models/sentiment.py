@@ -1,15 +1,20 @@
 from alpaca_news import AlpacaNews
+from typing import List, Dict
 
 class Sentiment():
     def __init__(
         self,
-        article: AlpacaNews,
+        ticker: List[str],
+        source: str,
+        date: str,
         positive: float,
         neutral: float,
         negative: float,
         compound: float,
     ):
-        self.article_url = article
+        self.ticker = ticker
+        self.source = source
+        self.date = date,
         self.positive = positive
         self.neutral = neutral
         self.negative = negative
