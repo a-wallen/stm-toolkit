@@ -52,7 +52,7 @@ class AlpacaNews():
         updated_at: str,
         summary: str,
         content: str,
-        images: List[AlpacaImage],
+        # images: List[AlpacaImage],
         symbols: List[str],
         source: str,
     ):
@@ -63,7 +63,7 @@ class AlpacaNews():
         self.updated_at = updated_at
         self.summary = summary
         self.content = content
-        self.images = images
+        # self.images = images
         self.symbols = symbols
         self.source = source
 
