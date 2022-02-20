@@ -66,7 +66,7 @@ class AlpacaNews():
         self.source = source
 
     def __str__(self) -> str:
-        return "[ " + str(self.id) + " | " + str(self.headline) + " | " + str(self.author) + " | " + str(self.summary) + " | " + str(self.content) + " | " + str(self.symbols) + " | " + str(self.source) + " ]"
+        return "[ " + str(self.id) + " | " + str(self.headline) + " | " + str(self.author)  + " | " + str(self.symbols) + " | " + str(self.created_at)+" ]"
 
 
 if __name__ == "__main__":

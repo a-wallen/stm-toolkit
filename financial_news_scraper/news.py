@@ -1,8 +1,12 @@
+from ctypes import sizeof
+from itertools import count
 import json
 import os
+import uuid
 from random import randint
 import sys
 from time import sleep
+from datetime import datetime, timedelta, timezone 
 
 from aiohttp import request
 from bs4 import BeautifulSoup
@@ -35,38 +39,75 @@ class News():
         self.alpaca = Alpaca()
 
     def getNewsArticles(self) -> List[AlpacaNews]:
-        list = self.alpaca.getNews()
+        local_time = datetime.utcnow()
+        # local_time = local_time.strftime("%Y-%m-%eT%H:%M:%SZ")
+        
+        # print(local_time)
+        list = []
+        for i in range(5):
+            td = timedelta(i*3)
+            # print((local_time-td).strftime("%Y-%m-%eT%H:%M:%SZ"))
+            list += self.alpaca.getNews(end=(local_time-td).strftime("%Y-%m-%dT%H:%M:%SZ"))
+        # td = timedelta(31)
+        # print((local_time-td).strftime("%Y-%m-%dT%H:%M:%SZ"))
+        # list+= self.alpaca.getNews(end=(local_time-td).strftime("%Y-%m-%dT%H:%M:%SZ"))
+        
+
+        # list+=self.getNewsUsingNewspaper()
         return list
 
     def getNewsUsingNewspaper(self) -> List[AlpacaNews]:
-        url = "https://finance.yahoo.com"
+        url = "https://www.cnbc.com/business/"
 
-       
-    
+        response = requests.get(url, allow_redirects=True, timeout=30)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        # print(soup.prettify())
 
-        yahooPaper= Source(url = url)
-        yahooPaper.build()
-        for i in yahooPaper.articles:
-            i.download()
-            i.parse()
-            print(i.title)
-            sleep(randint(1, 5))
-
-
+        soupTitle = soup.findAll("div", {"class":"Card-standardBreakerCard Card-threeUpStackRectangleSquareMedia Card-rectangleToLeftSquareMedia Card-card"}, recursive=True)
         
+        list = []
 
-        
+        for item in soupTitle:
+            m = item.find("a")
+            if m :
+                # print(m['href'])
+                list.append(Article(m['href']))
 
-        
 
-        
-        
+        # print(list)
 
+        finalList = []
+
+        for article in list:
+            article.download()
+            article.parse()
+            # print(article.title)
+            finalList.append(AlpacaNews(id=uuid.uuid4(), headline=article.title, author=article.authors, created_at=article.publish_date, updated_at=article.publish_date, summary=article.summary, content=article.text, symbols=article.keywords, source=article.source_url))
+            
+        
+        # print(finalList[1].headline)
+        # print(finalList[1].symbols)
+
+
+        return finalList
+
+  
+        
 
 
 if __name__ == "__main__":
     n = News()
-    # list = n.getNewsArticles()
-    # print([str(i) for i in list])
-    n.getNewsUsingNewspaper()
+    list = n.getNewsArticles()
+    # print(len(list))
+    count = 0
+    for i in list:
+        if i.symbols.__contains__('TSLA'):
+            count+=1
+
+    print(count)
+
+    
+        
+    print([str(i) for i in list])
+
     

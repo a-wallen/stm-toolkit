@@ -4,6 +4,8 @@ import datetime
 import logging
 import azure.functions as func
 
+import news
+
 
 # Append the path to the /models folder for access to shared models
 sys.path.append(os.path.join(os.path.dirname(
@@ -21,8 +23,9 @@ def main(mytimer: func.TimerRequest) -> None:
     cosmos = Cosmos()
     cosmos.write([ticker])
 
-    news = alpaca.getNews()
-    cosmos.write(news)
+    news = news.News()
+    newsList = news.getNewsArticles()
+    cosmos.write(newsList)
 
     if mytimer.past_due:
         logging.info('The timer is past due!')
@@ -38,5 +41,7 @@ if __name__ == "__main__":
     ticker: AlpacaTicker = alpaca.getTickerInfo("TSLA")
     cosmos = Cosmos()
     cosmos.write([ticker])
-    news = alpaca.getNews()
-    cosmos.write(news)
+    news = news.News()
+    newsList = news.getNewsArticles()
+    print(len(newsList))
+    cosmos.write(newsList)
