@@ -5,7 +5,7 @@ from symtable import Symbol
 import sys
 import json
 import base64
-from datetime import datetime
+from datetime import datetime, timedelta
 import alpaca_trade_api as tradeapi
 from typing import Dict, List
 from bs4 import BeautifulSoup
@@ -15,6 +15,7 @@ from alpaca_ticker import AlpacaTicker
 from alpaca_news import AlpacaNews
 from alpaca_image import AlpacaImage
 from delta import Delta
+from dateutil import parser
 
 from alpaca_trade_api.rest import TimeFrame, URL, TimeFrameUnit
 from alpaca_trade_api.rest_async import gather_with_concurrency, AsyncRest
@@ -88,7 +89,12 @@ class Alpaca():
         # quote = self.api.get_latest_bar()
         # quote = self.api.get_latest_bars()
         # print(quote[0].o, quote[-1].c)
-        quote = self.api.get_bars(symbol, TimeFrame.Hour, day, day, adjustment='raw')
+        now: datetime = datetime.now()
+        date: datetime = parser.parse(day)
+        if date.day == now.day and date.month == now.month and date.year == now.year:
+            date -= timedelta(minutes=15)
+
+        quote = self.api.get_bars(symbol, TimeFrame.Day, str(date), str(date), adjustment='raw')
         opening: float = float(quote[0].o)
         closing: float = float(quote[-1].c)
         delta: float = closing / opening
