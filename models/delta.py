@@ -1,5 +1,3 @@
-from datetime import datetime
-
 class Delta():
     def __init__(
         self,

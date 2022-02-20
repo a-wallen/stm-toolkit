@@ -3,7 +3,6 @@ import os
 import datetime
 import logging
 import azure.functions as func
-
 import news
 
 
@@ -12,7 +11,6 @@ sys.path.append(os.path.join(os.path.dirname(
     os.path.dirname(__file__)), 'models'))
 from alpaca import Alpaca
 from alpaca_ticker import AlpacaTicker
-from alpaca_quote import AlpacaQuote
 from cosmos import Cosmos
 
 def main(mytimer: func.TimerRequest) -> None:
@@ -29,9 +27,6 @@ def main(mytimer: func.TimerRequest) -> None:
     newsList = news.getNewsArticles()
     cosmos.write(newsList)
 
-    # quote: AlpacaQuote = alpaca.getQuoteInfo("TSLA")
-    # cosmos.write([quote])
-
     if mytimer.past_due:
         logging.info('The timer is past due!')
 
@@ -43,10 +38,11 @@ if __name__ == "__main__":
         tzinfo=datetime.timezone.utc).isoformat()
 
     alpaca = Alpaca()
-    ticker: AlpacaTicker = alpaca.getTickerInfo("TSLA")
-    # quote: AlpacaQuote = alpaca.getQuoteInfo("TSLA")
     cosmos = Cosmos()
+
+    ticker: AlpacaTicker = alpaca.getTickerInfo("TSLA")
     cosmos.write([ticker])
+
     news = news.News()
     newsList = news.getNewsArticles()
     cosmos.write(newsList)

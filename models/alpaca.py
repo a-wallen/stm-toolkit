@@ -62,7 +62,6 @@ class Alpaca():
         Returns:
             List[AlpacaTicker]: _description_
         """
-        # trade = self.api.get_latest_trade(symbol)
         trade = self.api.get_latest_trade(symbol)
         return AlpacaTicker(
             t=str(trade.t),
@@ -83,12 +82,6 @@ class Alpaca():
         Returns:
             List[AlpacaQuote]: _description_
         """
-        # quote = self.api.get_bars(symbol=symbol, timeframe=TimeFrame(1, TimeFrameUnit("Day")))
-        # quote = self.api.get_bars_iter(symbol=symbol, timeframe=TimeFrame(1, TimeFrameUnit("Day")))
-        # quote = self.api.get_barset()
-        # quote = self.api.get_latest_bar()
-        # quote = self.api.get_latest_bars()
-        # print(quote[0].o, quote[-1].c)
         now: datetime = datetime.now()
         date: datetime = parser.parse(day)
         if date.day == now.day and date.month == now.month and date.year == now.year:
@@ -105,7 +98,6 @@ class Alpaca():
             delta=str(delta),
             date=day,
         )
-        # print(quote)
 
     # https://alpaca.markets/docs/api-references/market-data-api/news-data/historical/
     def getNews(
@@ -119,7 +111,21 @@ class Alpaca():
         exclude_contentless: bool = False,
         page_token: str = None
     ) -> List[AlpacaNews]:
+        """Returns latest news articles across stocks and crypto. By default returns latest 10 news articles.
 
+        Args:
+            symbols (str, optional): List of symbols to obtain news. Defaults to None.
+            start (datetime, optional): (Default: 01-01-2015) Start date to obtain news. Defaults to None.
+            end (datetime, optional): (Default: now) End date to obtain news. Defaults to None.
+            limit (int, optional): (Default: 10, Max: 50) Limit of news items to be returned for given page. Defaults to None.
+            sort (str, optional): (Default: DESC) Sort articles by updated date. Options: DESC, ASC. Defaults to None.
+            include_content (bool, optional): (Default: false) Boolean whether to include content for news articles. Defaults to None.
+            exclude_contentless (bool, optional): (Default: false) Exclude news articles that do not contain content (just headline and summary). Defaults to None.
+            page_token (str, optional): Pagination token to continue to next page. Defaults to None.
+
+        Returns:
+            List[AlpacaNews]: Returns latest news articles across stocks and crypto. By default returns latest 10 news articles.
+        """
         
         symbols = ['TSLA']  
 
@@ -139,21 +145,6 @@ class Alpaca():
 
         return finalList
 
-        """Returns latest news articles across stocks and crypto. By default returns latest 10 news articles.
-
-        Args:
-            symbols (str, optional): List of symbols to obtain news. Defaults to None.
-            start (datetime, optional): (Default: 01-01-2015) Start date to obtain news. Defaults to None.
-            end (datetime, optional): (Default: now) End date to obtain news. Defaults to None.
-            limit (int, optional): (Default: 10, Max: 50) Limit of news items to be returned for given page. Defaults to None.
-            sort (str, optional): (Default: DESC) Sort articles by updated date. Options: DESC, ASC. Defaults to None.
-            include_content (bool, optional): (Default: false) Boolean whether to include content for news articles. Defaults to None.
-            exclude_contentless (bool, optional): (Default: false) Exclude news articles that do not contain content (just headline and summary). Defaults to None.
-            page_token (str, optional): Pagination token to continue to next page. Defaults to None.
-
-        Returns:
-            List[AlpacaNews]: Returns latest news articles across stocks and crypto. By default returns latest 10 news articles.
-        """
 
 
 if __name__ == "__main__":

@@ -20,7 +20,6 @@ from nltk.sentiment.util import *
 # Stock Ticker info from Alpaca: https://alpaca.markets/docs/api-references/market-data-api/stock-pricing-data/historical/
 from alpaca_news import AlpacaNews as News
 from sentiment import Sentiment # internal class for storing sentiment data
-from datetime import datetime
 
 class SentimentAnalyzer():
     """Sentiment Analyzer for Alpaca News articles"""

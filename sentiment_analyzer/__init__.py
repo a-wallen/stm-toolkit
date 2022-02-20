@@ -22,10 +22,10 @@ def print_sentiment(sentiment: Sentiment) -> None:
         f'Comp: {sentiment.compound} '
     )
 
-def main() -> str: #documents: func.DocumentList
+def main(documents: func.DocumentList) -> str:
 
-    # if documents:
-    #     logging.info('Document id: %s', documents[0]['id'])
+    if documents:
+        logging.info('Document id: %s', documents[0]['id'])
 
     # Access database
     cosmos = Cosmos()
@@ -42,12 +42,24 @@ def main() -> str: #documents: func.DocumentList
         print_sentiment(sentiment)
 
     for article in articles:
-        delta = alpaca.getDelta(article.tickers, article.created_at)
+        delta: Delta = alpaca.getDelta(article.tickers, article.created_at)
         print(delta.__dict__)
         cosmos.write([delta])
 
-    
-
 
 if __name__ == "__main__":
-    main()
+    cosmos = Cosmos()
+    alpaca = Alpaca()
+
+    articles = cosmos.read(AlpacaNews)
+
+    sa = SentimentAnalyzer()
+    for article in articles:
+        sentiment = sa.analyze(article)
+        cosmos.write([sentiment])
+        print_sentiment(sentiment)
+
+    for article in articles:
+        delta = alpaca.getDelta(article.tickers, article.created_at)
+        print(delta.__dict__)
+        cosmos.write([delta])
