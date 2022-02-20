@@ -3,12 +3,14 @@ from datetime import datetime
 class Delta():
     def __init__(
         self,
+        id: str,
         symbol: str,
         delta: str,
         open: str,
         close: str,
         date: str,
     ):
+        self.id = id
         self.symbol = symbol
         self.delta = delta
         self.open = open

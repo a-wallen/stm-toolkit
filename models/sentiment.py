@@ -5,6 +5,7 @@ class Sentiment():
 
     def __init__(
         self,
+        id: str,
         tickers: List[str],
         source: str,
         date: str,
@@ -13,6 +14,7 @@ class Sentiment():
         negative: float,
         compound: float,
     ):
+        self.id = id
         self.tickers = tickers
         self.source = source
         self.date = date
